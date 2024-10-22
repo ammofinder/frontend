@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produkty</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    <style>
+        table {
+            table-layout: auto; /* Domyślne zachowanie */
+            width: 100%; /* Aby tabela zajmowała całą szerokość kontenera */
+        }
+        th, td {
+            white-space: nowrap; /* Zapobiega zawijaniu tekstu w komórkach */
+        }
+    </style>
+
+</head>
+<body>
+<div class="container mt-5">
+    <h1>Amunicja - pomorskie</h1>
+
+    <div class="form-group mb-3">
+        <label for="caliber">Wybierz kaliber:</label>
+        <select id="caliber" class="form-control">
+            <option value="9x19">9x19</option>
+            <option value="22 LR">22 LR</option>
+            <option value="223 Rem">223 Rem</option>
+        </select>
+    </div>
+
+    <table id="produktyTable" class="display table table-bordered">
+        <thead>
+            <tr>
+                <th>Kaliber</th>
+                <th>Sklep</th>
+                <th>Link</th>
+                <th>Nazwa</th>
+                <th>Cena (PLN)</th>
+                <th>Updated</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="static/scripts.js"></script>
+</body>
+</html>
