@@ -1,4 +1,4 @@
-# dobroni_pomorskie_frontend
+# amunicja_pomorskie_frontend
 
 Tldr: istnieje dobroni.org ale ukierunkowany na sklepy z południa kraju, więc na szybko machnąłem po swojemu, 
 żeby scrapować interesujące mnie pomorskie sklepy.
