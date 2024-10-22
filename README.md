@@ -25,5 +25,11 @@ if ($mysqli->connect_error) {
 ?>
 ```
 
+# Early preview
+
+![alt text](https://i.ibb.co/NYVhp63/Bez-tytu-u.png)
+
+
+# More info
 Database should contain data scrapped from webpages. More info here: 
 https://github.com/wkobiela/dobroni_pomorskie_backend
