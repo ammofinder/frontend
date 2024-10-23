@@ -2,7 +2,7 @@
 require 'config.php';
 
 $typ = $_GET['caliber'] ?? '';
-$sql = "SELECT caliber, shop, link, product_name, price, date_updated FROM produkty WHERE caliber = ?";
+$sql = "SELECT caliber, shop, link, product_name, price, available, date_updated FROM produkty WHERE caliber = ?";
 $stmt = $mysqli->prepare($sql);
 $stmt->bind_param("s", $typ);
 $stmt->execute();

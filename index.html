@@ -10,18 +10,16 @@
     <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 
     <style>
-        table {
-            table-layout: auto;
-            width: 100%;
-        }
-        th, td {
-            white-space: nowrap;
+        .container-custom {
+            width: 1600px;
+            max-width: 100%;
+            margin: 0 auto;
         }
     </style>
 
 </head>
 <body>
-<div class="container mt-5">
+<div class="container-custom mt-5">
     <h1>Amunicja - pomorskie</h1>
 
     <div class="form-group mb-3">
@@ -41,11 +39,13 @@
                 <th>Link</th>
                 <th>Nazwa</th>
                 <th>Cena (PLN)</th>
+                <th>Dostępne</th>
                 <th>Zaktualizowano</th>
             </tr>
         </thead>
         <tbody></tbody>
     </table>
+    <br>
 </div>
 
 <script src="static/scripts.js"></script>
