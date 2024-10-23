@@ -1,9 +1,9 @@
 # amunicja_pomorskie_frontend
 
-Tldr: istnieje dobroni.org ale ukierunkowany na sklepy z południa kraju, więc na szybko machnąłem po swojemu, 
-żeby scrapować interesujące mnie pomorskie sklepy.
+Tldr: there is dobroni.org but it is aimed at stores from the south of the country, so I quickly made my own
+to scrapbook the Pomeranian stores that interest me.
 
-Możliwe, że stronka będzie online w niedługim czasie.
+It is possible that the site will be online soon.
 
 # To connect with database
 
