@@ -27,7 +27,7 @@ if ($mysqli->connect_error) {
 
 # Early preview
 
-![preview](https://i.ibb.co/NYVhp63/Bez-tytu-u.png)
+![preview](https://i.ibb.co/9stPL5t/Przechwytywanie.png)
 
 
 # More info
