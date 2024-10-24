@@ -1,62 +1,73 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ceny amunicji</title>
-    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/styles.css">
+        <title>Ceny amunicji</title>
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet"
+            href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script
+            src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+    </head>
+    <body>
+        <script src="static/scripts.js"></script>
+        <div class="container-custom mt-5">
+            <h1>Amunicja - pomorskie</h1>
 
-    <style>
-        .container-custom {
-            width: 1600px;
-            max-width: 100%;
-            margin: 0 auto;
-        }
-    
-        @media (max-width: 1600px) {
-            .container-custom {
-                width: 100%;
-                padding: 0 15px;
-            }
-        }
-    </style>
+            <div class="form-group mb-3">
+                <label for="caliber">Wybierz kaliber:</label>
+                <select id="caliber" class="form-control">
+                    <option value="9x19">9x19</option>
+                    <option value="22 LR">22 LR</option>
+                    <option value="223 Rem">223 Rem</option>
+                    <option value="7.62x39">7.62x39</option>
+                </select>
+            </div>
 
-</head>
-<body>
-<div class="container-custom mt-5">
-    <h1>Amunicja - pomorskie</h1>
-
-    <div class="form-group mb-3">
-        <label for="caliber">Wybierz kaliber:</label>
-        <select id="caliber" class="form-control">
-            <option value="9x19">9x19</option>
-            <option value="22 LR">22 LR</option>
-            <option value="223 Rem">223 Rem</option>
-            <option value="7.62x39">7.62x39</option>
-        </select>
-    </div>
-
-    <table id="produktyTable" class="display table table-bordered">
-        <thead>
-            <tr>
-                <th>Kaliber</th>
-                <th>Sklep</th>
-                <th>Link</th>
-                <th>Nazwa</th>
-                <th>Cena (PLN)</th>
-                <th>Dostępne</th>
-                <th>Zaktualizowano</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-    <br>
-</div>
-
-<script src="static/scripts.js"></script>
-</body>
+            <table id="produktyTable" class="display table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Kaliber</th>
+                        <th>Sklep</th>
+                        <th>Link</th>
+                        <th>Nazwa</th>
+                        <th>Cena (PLN)</th>
+                        <th>Dostępne</th>
+                        <th>Zaktualizowano</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <br>
+            <h2>Informacje</h2>
+            <div class="container-internal">
+                <p>
+                    1. Przed zakupem potwierdź faktyczną dostepność na stronie
+                    sklepu.<br>
+                    2. Aplikacja jest we wczesnej fazie rozwoju. Jeśli zauważysz
+                    braki, bądź źle dopasowane produkty, zgłoś to.
+                </p>
+            </div>
+            <br>
+            <h2>Obsługiwane sklepy</h2>
+            <div class="container-internal">
+                <div class="shop-card">
+                    <a href="https://dixiepomerania.pl/?page_id=55"
+                        target="_blank">Dixie Pomerania</a>
+                </div>
+                <div class="shop-card">
+                    <a href="https://www.gardaarms.pl/produkty/amunicja/2-239"
+                        target="_blank">Garda Arms</a>
+                </div>
+                <div class="shop-card">
+                    <a href="https://rusznikarnia.eu/kategoria/amunicja/"
+                        target="_blank">Rusznikarnia</a>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
