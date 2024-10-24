@@ -11,6 +11,11 @@
     }
 }
 
+.form-check-input {
+    transform: scale(1.2);
+    margin: 20px;
+} 
+
 .container-internal {
     display: flex;
     flex-wrap: wrap;
@@ -40,3 +45,9 @@
     text-decoration: none;
     color: #007bff;
 }
+
+.shop-card p {
+    font-size: 10px;
+    margin: 0;
+}
+

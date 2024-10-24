@@ -1,9 +1,9 @@
 $(document).ready(function() {
-    function fetchData(typ) {
+    function fetchData(typ, filterDate) {
         $.ajax({
             url: 'static/getData.php',
             type: 'GET',
-            data: { caliber: typ },
+            data: { caliber: typ , dateFilter: filterDate},
             success: function(response) {
                 let data = JSON.parse(response);
                 $('#produktyTable').DataTable().clear().rows.add(data).draw();
@@ -63,7 +63,18 @@ $(document).ready(function() {
     });
 
     $('#caliber').change(function() {
-        fetchData($(this).val());
+        // While changing caliber, set checkbox to true automatically
+        if (!$('#dateFilter').is(':checked')) {
+            $('#dateFilter').prop('checked', true);
+        }
+        let filterDate = $('#dateFilter').is(':checked');
+        fetchData($('#caliber').val(), filterDate);
+    });
+
+    // If ONLY checkbox is changed
+    $('#dateFilter').change(function() {
+        let filterDate = $(this).is(':checked');
+        fetchData($('#caliber').val(), filterDate);
     });
 
     // Initial load
