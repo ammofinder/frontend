@@ -3,9 +3,13 @@ $(document).ready(function() {
     if (localStorage.getItem('darkMode') === 'enabled') {
         enableDarkMode();
         $('#darkModeSwitch').prop('checked', true);
-    } else {
+    } else if (localStorage.getItem('darkMode') === 'disabled') {
         disableDarkMode();
         $('#darkModeSwitch').prop('checked', false);
+    } else {
+        // Jeśli brak ustawień w localStorage, domyślnie włącz tryb ciemny
+        enableDarkMode();
+        $('#darkModeSwitch').prop('checked', true);
     }
 
     // Funkcja włączania trybu ciemnego
