@@ -11,11 +11,6 @@
     }
 }
 
-.form-check-input {
-    transform: scale(1.2);
-    margin: 20px;
-} 
-
 .container-internal {
     display: flex;
     flex-wrap: wrap;
@@ -51,3 +46,8 @@
     margin: 0;
 }
 
+/* Styl dla trybu ciemnego */
+html[data-bs-theme="dark"] .shop-card {
+    border: 1px solid #495057;
+    background-color: #262a2e;
+}

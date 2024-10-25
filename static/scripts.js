@@ -1,4 +1,38 @@
 $(document).ready(function() {
+    // Sprawdzenie, czy użytkownik wcześniej ustawił tryb ciemny
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        enableDarkMode();
+        $('#darkModeSwitch').prop('checked', true);
+    } else {
+        disableDarkMode();
+        $('#darkModeSwitch').prop('checked', false);
+    }
+
+    // Funkcja włączania trybu ciemnego
+    function enableDarkMode() {
+        $('html').attr('data-bs-theme', 'dark');  // Ustawienie atrybutu dla Bootstrap
+        $('html').addClass('dark');  // Dodanie klasy dark
+        localStorage.setItem('darkMode', 'enabled');
+    }
+
+    // Funkcja wyłączania trybu ciemnego
+    function disableDarkMode() {
+        $('html').removeAttr('data-bs-theme');  // Usunięcie atrybutu Bootstrap
+        $('html').removeClass('dark');  // Usunięcie klasy dark
+        localStorage.setItem('darkMode', 'disabled');
+    }
+
+    // Obsługa przełącznika
+    $('#darkModeSwitch').on('change', function() {
+        if ($(this).is(':checked')) {
+            enableDarkMode();
+        } else {
+            disableDarkMode();
+        }
+    });
+    
+    
+    
     function fetchData(typ, filterDate) {
         $.ajax({
             url: 'static/getData.php',
@@ -11,7 +45,7 @@ $(document).ready(function() {
         });
     }
 
-    $('#produktyTable').DataTable({
+    let table = new DataTable('#produktyTable', {
         autoWidth: false, 
         language: {
             decimal: ",",
@@ -27,12 +61,6 @@ $(document).ready(function() {
             search: "Szukaj:",
             searchPlaceholder: "Szukaj...",
             zeroRecords: "Nie znaleziono żadnych pasujących wpisów",
-            paginate: {
-                first: "Pierwsza",
-                last: "Ostatnia",
-                next: "Następna",
-                previous: "Poprzednia"
-            },
             aria: {
                 sortAscending: ": aktywuj, aby sortować kolumnę rosnąco",
                 sortDescending: ": aktywuj, aby sortować kolumnę malejąco"
@@ -45,7 +73,7 @@ $(document).ready(function() {
                 return '<a href="' + data + '" role="button" class="btn btn-outline-success btn-sm" target="_blank" title="link">Link</a>';
             }},
             { data: 'product_name', width: '50%' },
-            { data: 'price', width: '7%' },
+            { data: 'price', width: '9%' },
             { data: 'available', width: '5%', render: function(data) {
                 if (data.toLowerCase() === 'nie') {
                     return '<span style="color: red; font-weight: bold;">' + data + '</span>';
