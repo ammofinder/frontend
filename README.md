@@ -28,8 +28,18 @@ npm install
 npm run start
 ```
 
-Webpage will be available on `http://localhost:8080` while db_connection server on `http://localhost:3000`.
+Webpage will be available on `http://localhost:8080` while database connection API server on `http://localhost:3000`.
 
+# Run with Docker
+1. Build image
+```
+docker build -t ammo_frontend:latest .
+```
+2. Run container
+```
+docker run -d -p 8080:8080 -p 3000:3000 ammo_frontend:latest
+```
+3. App should be accessible on host IP:choosen_ports
 
 # Early preview
 
