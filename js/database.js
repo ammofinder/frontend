@@ -1,41 +1,41 @@
 const express = require('express');
 const mysql = require('mysql');
+const cors = require('cors');
+
 const app = express();
-const port = 3000; // Możesz zmienić port, jeśli jest zajęty
-const cors = require('cors'); // Dodaj ten import
-require('dotenv').config(); // Ładowanie zmiennych środowiskowych
+const port = 3000;
 
+// Load .env variables
+require('dotenv').config();
 
-// Użyj middleware CORS
-app.use(cors()); // To automatycznie ustawi nagłówek Access-Control-Allow-Origin
+// Use middleware CORS, to automatically set Access-Control-Allow-Origin header
+app.use(cors());
 
-// Konfiguracja połączenia z bazą danych z użyciem zmiennych środowiskowych
+// Database connection config, using environment variables
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,    // Host bazy danych
-    user: process.env.DB_USER,    // Użytkownik bazy danych
-    password: process.env.DB_PASSWORD,  // Hasło bazy danych
-    database: process.env.DB_DATABASE,  // Nazwa bazy danych
-    port: process.env.DB_PORT      // Port
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT
 });
 
-// Połączenie z bazą danych
+// Connect to database
 db.connect(err => {
     if (err) {
-        console.error('Błąd połączenia z bazą danych:', err.stack);
+        console.error('Connection to database failed:', err.stack);
         return;
     }
-    console.log('Połączono z bazą danych');
+    console.log('Connection to database successfull.');
 });
 
-// Pozwól na dostęp do plików statycznych, np. plików frontendowych
-app.use(express.static('public'));
-
-// Obsługa żądania GET dla danych
+// Handling GET request for data retrival from database
 app.get('/getData', (req, res) => {
     const caliber = req.query.caliber || '';
     const dateFilter = req.query.dateFilter === 'true';
 
-    let sql = "SELECT caliber, shop, link, product_name, price, available, date_updated FROM produkty WHERE caliber = ?";
+    let tableName = process.env.DB_TABLE;
+    let sql = `SELECT caliber, shop, link, product_name, price, available, date_updated FROM ${tableName} WHERE caliber = ?`;
     if (dateFilter) {
         sql += " AND date_updated >= NOW() - INTERVAL 1 DAY";
     }
@@ -43,14 +43,14 @@ app.get('/getData', (req, res) => {
     db.query(sql, [caliber], (err, results) => {
         if (err) {
             console.error(err);
-            res.status(500).send('Błąd serwera');
+            res.status(500).send('Server error.');
             return;
         }
         res.json(results);
     });
 });
 
-// Uruchomienie serwera
+// Start server
 app.listen(port, () => {
-    console.log(`Serwer działa na porcie ${port}`);
+    console.log(`Server is running on port http://localhost:${port}`);
 });

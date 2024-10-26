@@ -5,25 +5,31 @@ to scrapbook the Pomeranian stores that interest me.
 
 It is possible that the site will be online soon.
 
-# To connect with database
+# Needed packages
+- npm
+- node
 
-Create `config.php` file in `static` folder with following content:
+# How to run
 
-```php
-<?php
-$host = "server address";
-$user = "username";
-$password = "password";
-$dbname = "database name";
-$port = port;
+Create `.env` file in main folder, next to `index.html` with database settings:
 
-$mysqli = new mysqli($host, $user, $password, $dbname, $port);
-
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-?>
+```bash
+DB_HOST=IP_address
+DB_USER=user
+DB_PASSWORD=password
+DB_DATABASE=database_name
+DB_TABLE=table_name
+DB_PORT=port
 ```
+
+Install dependencies and run:
+```bash
+npm install
+npm run start
+```
+
+Webpage will be available on `http://localhost:8080` while db_connection server on `http://localhost:3000`.
+
 
 # Early preview
 
