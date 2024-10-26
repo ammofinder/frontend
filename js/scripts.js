@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    // Sprawdzenie, czy użytkownik wcześniej ustawił tryb ciemny
+    // Sprawdzenie trybu ciemnego (bez zmian)
     if (localStorage.getItem('darkMode') === 'enabled') {
         enableDarkMode();
         $('#darkModeSwitch').prop('checked', true);
@@ -7,26 +7,22 @@ $(document).ready(function() {
         disableDarkMode();
         $('#darkModeSwitch').prop('checked', false);
     } else {
-        // Jeśli brak ustawień w localStorage, domyślnie włącz tryb ciemny
         enableDarkMode();
         $('#darkModeSwitch').prop('checked', true);
     }
 
-    // Funkcja włączania trybu ciemnego
     function enableDarkMode() {
-        $('html').attr('data-bs-theme', 'dark');  // Ustawienie atrybutu dla Bootstrap
-        $('html').addClass('dark');  // Dodanie klasy dark
+        $('html').attr('data-bs-theme', 'dark');
+        $('html').addClass('dark');
         localStorage.setItem('darkMode', 'enabled');
     }
 
-    // Funkcja wyłączania trybu ciemnego
     function disableDarkMode() {
-        $('html').removeAttr('data-bs-theme');  // Usunięcie atrybutu Bootstrap
-        $('html').removeClass('dark');  // Usunięcie klasy dark
+        $('html').removeAttr('data-bs-theme');
+        $('html').removeClass('dark');
         localStorage.setItem('darkMode', 'disabled');
     }
 
-    // Obsługa przełącznika
     $('#darkModeSwitch').on('change', function() {
         if ($(this).is(':checked')) {
             enableDarkMode();
@@ -34,30 +30,32 @@ $(document).ready(function() {
             disableDarkMode();
         }
     });
-    
-    
-    
+
     function fetchData(typ, filterDate) {
+        console.log('Fetching data:', {typ, filterDate}); // Dodaj ten wiersz
         $.ajax({
-            url: 'static/getData.php',
+            url: 'http://localhost:3000/getData',
             type: 'GET',
             data: { caliber: typ , dateFilter: filterDate},
             success: function(response) {
-                let data = JSON.parse(response);
+                console.log('Data received:', response); // Dodaj ten wiersz
+                let data = response;
                 $('#produktyTable').DataTable().clear().rows.add(data).draw();
+            },
+            error: function(err) {
+                console.error('Błąd pobierania danych:', err);
             }
         });
     }
 
     let table = new DataTable('#produktyTable', {
-        autoWidth: false, 
+        autoWidth: false,
         language: {
             decimal: ",",
             emptyTable: "Brak danych",
             info: "Pokazuje _START_ do _END_ z _TOTAL_ wpisów",
             infoEmpty: "Pokazuje 0 do 0 z 0 wpisów",
             infoFiltered: "(filtrowane z _MAX_ całkowitych wpisów)",
-            infoPostFix: "",
             thousands: ".",
             lengthMenu: "Pokaż _MENU_ wpisów",
             loadingRecords: "Ładowanie...",
@@ -95,7 +93,6 @@ $(document).ready(function() {
     });
 
     $('#caliber').change(function() {
-        // While changing caliber, set checkbox to true automatically
         if (!$('#dateFilter').is(':checked')) {
             $('#dateFilter').prop('checked', true);
         }
@@ -103,12 +100,10 @@ $(document).ready(function() {
         fetchData($('#caliber').val(), filterDate);
     });
 
-    // If ONLY checkbox is changed
     $('#dateFilter').change(function() {
         let filterDate = $(this).is(':checked');
         fetchData($('#caliber').val(), filterDate);
     });
 
-    // Initial load
     fetchData('9x19');
 });
