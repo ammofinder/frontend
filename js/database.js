@@ -29,6 +29,17 @@ db.connect(err => {
     console.log('Connection to database successfull.');
 });
 
+// Main route with info about endpoints
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>Database connection API server - amunicja_pomorskie_frontend</h1>
+        <p>Available endpoints:</p>
+        <ul>
+            <li><strong>GET</strong> /getData - Downloading data based on the caliber parameter - example: /getData?caliber=9x19</li>
+        </ul>
+    `);
+});
+
 // Handling GET request for data retrival from database
 app.get('/getData', (req, res) => {
     const caliber = req.query.caliber || '';
