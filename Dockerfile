@@ -12,9 +12,9 @@ COPY . .
 
 RUN useradd -m appuser
 
-USER appuser
-
 RUN npm install --only=production
+
+USER appuser
 
 CMD ["npm", "run", "start"]
 
