@@ -34,7 +34,7 @@ $(document).ready(function() {
     function fetchData(typ, filterDate) {
         console.log('Fetching data:', {typ, filterDate}); // Dodaj ten wiersz
         $.ajax({
-            url: 'http://localhost:3000/getData',
+            url: '/getData',
             type: 'GET',
             data: { caliber: typ , dateFilter: filterDate},
             success: function(response) {
