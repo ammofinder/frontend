@@ -26,7 +26,7 @@ NODE_ENV=production
 
 Install dependencies and run:
 ```bash
-npm install
+npm install --only=production
 npm run start
 ```
 
@@ -62,9 +62,28 @@ Remember to update `G-GOOGLE-JTAG-NUMBER` with your own analytics Google code.
     gtag('config', 'G-GOOGLE-JTAG-NUMBER');
 })();
 ```
+
+## Development
+Install dev packages:
+```bash
+npm install
+```
+
+Repository is using super-linter GHA job. For local linting:
+- css
+```bash
+npm stylelint init
+npx stylelint "**/*.css"
+```
+- javascript
+```bash
+standard --fix
+```
+
 ## Early preview
 
 ![preview](https://i.ibb.co/phS4pzd/Przechwytywanie.png)
+
 
 ## More info
 Database should contain data scrapped from web pages. More info here:
