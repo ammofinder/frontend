@@ -5,11 +5,11 @@ to scrapbook the Pomeranian stores that interest me.
 
 This is my first ever project in Bootstrap/js, feel free to join.
 
-# Needed packages
+## Needed packages
 - npm
 - node
 
-# How to run
+## How to run
 
 Create `.env` file in main folder, next to `index.html` with database settings:
 
@@ -30,21 +30,21 @@ npm install
 npm run start
 ```
 
-Webpage and API server will be available on  `http://localhost:3000`.
+Web page and API server will be available on  `http://localhost:3000`.
 
-# Run with Docker
+## Run with Docker
 
 1. Build image
-```
+```bash
 docker build -t ammo_frontend:latest .
 ```
 2. Run container
-```
+```bash
 docker run -d -p 3000:3000 ammo_frontend:latest
 ```
 3. App should be accessible on host IP:3000
 
-# Google analytics
+## Google analytics
 Create `analytics.js` file in main catalog, before building docker image/running server, with following content.<br>
 Remember to update `G-GOOGLE-JTAG-NUMBER` with your own analytics Google code.
 
@@ -62,10 +62,10 @@ Remember to update `G-GOOGLE-JTAG-NUMBER` with your own analytics Google code.
     gtag('config', 'G-GOOGLE-JTAG-NUMBER');
 })();
 ```
-# Early preview
+## Early preview
 
 ![preview](https://i.ibb.co/phS4pzd/Przechwytywanie.png)
 
-# More info
-Database should contain data scrapped from webpages. More info here:
-https://github.com/wkobiela/dobroni_pomorskie_backend
+## More info
+Database should contain data scrapped from web pages. More info here:
+[wkobiela/dobroni_pomorskie_backend](https://github.com/wkobiela/dobroni_pomorskie_backend)
