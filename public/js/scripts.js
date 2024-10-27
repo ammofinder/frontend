@@ -32,13 +32,13 @@ $(document).ready(function() {
     });
 
     function fetchData(typ, filterDate) {
-        console.log('Fetching data:', {typ, filterDate}); // Dodaj ten wiersz
+        console.log('Fetching data:', {typ, filterDate});
         $.ajax({
             url: '/getData',
             type: 'GET',
             data: { caliber: typ , dateFilter: filterDate},
             success: function(response) {
-                console.log('Data received:', response); // Dodaj ten wiersz
+                console.log('Data received:', response);
                 let data = response;
                 $('#produktyTable').DataTable().clear().rows.add(data).draw();
             },

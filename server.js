@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
 const path = require('path');
+const winston = require('winston');
+const morgan = require('morgan');
 
 const app = express();
 const port = 3000;
@@ -10,10 +12,37 @@ const port = 3000;
 require('dotenv').config();
 
 // Use middleware CORS, to automatically set Access-Control-Allow-Origin header
-app.use(cors());
+const corsOptions = {
+    origin: 'https://ammo.kobiela.click',
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
+// Winston/morgan logger settings
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'combined.log' })
+    ]
+});
+
+logger.stream = {
+    write: function(message) {
+        logger.info(message.trim());
+    }
+};
+
+// Use morgan to save logs to files
+app.use(morgan('combined', { stream: logger.stream }));
 
 // Database connection config, using environment variables
-const db = mysql.createConnection({
+const pool = mysql.createPool({
+    connectionLimit: 10,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -21,20 +50,12 @@ const db = mysql.createConnection({
     port: process.env.DB_PORT
 });
 
-// Connect to database
-db.connect(err => {
-    if (err) {
-        console.error('Connection to database failed:', err.stack);
-        return;
-    }
-    console.log('Connection to database successfull.');
-});
-
-app.use(express.static(path.join(__dirname)));
+// Public folder with webpage
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Main route with info about endpoints
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.get('/api', (req, res) => {
@@ -58,7 +79,8 @@ app.get('/getData', (req, res) => {
         sql += " AND date_updated >= NOW() - INTERVAL 1 DAY";
     }
 
-    db.query(sql, [caliber], (err, results) => {
+    // Use the pool to execute the query
+    pool.query(sql, [caliber], (err, results) => {
         if (err) {
             console.error(err);
             res.status(500).send('Server error.');

@@ -20,6 +20,8 @@ DB_PASSWORD=password
 DB_DATABASE=database_name
 DB_TABLE=table_name
 DB_PORT=port
+
+NODE_ENV=production
 ```
 
 Install dependencies and run:

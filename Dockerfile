@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install
+RUN npm install --only=production
 
-CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]
