@@ -23,6 +23,8 @@
     "winston": "^3.15.0"
   },
   "devDependencies": {
-    "standard": "^17.1.2"
+    "standard": "^17.1.2",
+    "stylelint": "^16.10.0",
+    "stylelint-config-standard": "^36.0.1"
   }
 }
