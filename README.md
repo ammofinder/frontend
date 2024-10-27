@@ -70,12 +70,12 @@ npm install
 ```
 
 Repository is using super-linter GHA job. For local linting:
-- css
+- CSS
 ```bash
 npm stylelint init
 npx stylelint "**/*.css"
 ```
-- javascript
+- JavaScript
 ```bash
 standard --fix
 ```
