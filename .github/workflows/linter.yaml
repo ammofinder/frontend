@@ -29,11 +29,10 @@ jobs:
         uses: super-linter/super-linter/slim@v7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          FIX_JAVASCRIPT_PRETTIER: true
           VALIDATE_ALL_CODEBASE: true
-          CSS_PRETTIER: false
-          HTML_PRETTIER: false
-          MARKDOWN_PRETTIER: false
-          YAML_PRETTIER: false
-          JAVASCRIPT_PRETTIER: false
-          JSON_PRETTIER: false
+          VALIDATE_CSS_PRETTIER: false
+          VALIDATE_HTML_PRETTIER: false
+          VALIDATE_MARKDOWN_PRETTIER: false
+          VALIDATE_YAML_PRETTIER: false
+          VALIDATE_JAVASCRIPT_PRETTIER: false
+          VALIDATE_JSON_PRETTIER: false
