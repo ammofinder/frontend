@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pl" data-bs-theme="dark" class="dark">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./static/css/styles.css">
+        <title>Ceny amunicji w Pomorskim</title>
+        <link rel="shortcut icon" href="./static/favicon.ico">
+        <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="./node_modules/datatables.net-dt/css/dataTables.dataTables.css" />
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="./node_modules/datatables.net/js/dataTables.js"></script>
+        <script src="./node_modules/moment/min/moment.min.js"></script>
+        <script src="./static/js/scripts.js"></script>
+        <script>
+            function loadScript(url) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) { // If file exists
+                        const script = document.createElement('script');
+                        script.src = url;
+                        document.head.appendChild(script); // Add script to <head>
+                    } else {
+                        console.log(`Google Analytics config file ${url} was not found. Analytics disabled..`);
+                    }
+                };
+                xhr.onerror = function() {
+                    console.log(`An error occurred while trying to load the file ${url}.`);
+                };
+                xhr.send();
+            }
+            loadScript('analytics.js');
+        </script>
+    </head>
+    <body>
+        <div class="container-custom mt-5">
+            <h1>Amunicja - pomorskie</h1>
+            <br>
+            <div class="form-group mb-3">
+                <label for="caliber">Wybierz kaliber:</label>
+                <select id="caliber" class="form-control">
+                    <option value="9x19">9x19</option>
+                    <option value="22 LR">22 LR</option>
+                    <option value="223 Rem">223 Rem</option>
+                    <option value="7.62x39">7.62x39</option>
+                </select>
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="dateFilter" checked>
+                <label class="form-check-label" for="dateFilter">
+                    Wyświetl tylko produkty zaktualizowane w ciągu doby.
+                    Jeśli nie zostały zaktualizowane, strona produktu mogła zniknąć ze sklepu = produkt nie istnieje.
+                </label>
+            </div>
+
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="darkModeSwitch" checked>
+                <label class="form-check-label" for="darkModeSwitch">Tryb ciemny</label>
+            </div>
+
+            <br>
+            <table id="produktyTable" class="display table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Kaliber</th>
+                        <th>Sklep</th>
+                        <th>Link</th>
+                        <th>Nazwa</th>
+                        <th>Cena (PLN)</th>
+                        <th>Dostępne</th>
+                        <th>Zaktualizowano</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <br>
+            <h2>Informacje</h2>
+            <div class="container-internal">
+                <p>
+                    1. Przed zakupem potwierdź faktyczną dostepność na stronie
+                    sklepu.<br>
+                    2. Aplikacja jest we wczesnej fazie rozwoju. Jeśli zauważysz
+                    braki, bądź źle dopasowane produkty,
+                    <a href="https://github.com/wkobiela/amunicja_pomorskie_frontend/issues">zgłoś to.</a>
+                </p>
+            </div>
+            <br>
+            <h2>Obsługiwane sklepy</h2>
+            <div class="container-internal">
+                <div class="shop-card">
+                    <a href="https://dixiepomerania.pl/?page_id=55" target="_blank">Dixie Pomerania</a>
+                    <p>Klucz -> nazwa produktu</p>
+                </div>
+                <div class="shop-card">
+                    <a href="https://www.gardaarms.pl/produkty/amunicja/2-239" target="_blank">Garda Arms</a>
+                    <p>Klucz -> link</p>
+                </div>
+                <div class="shop-card">
+                    <a href="https://rusznikarnia.eu/kategoria/amunicja/" target="_blank">Rusznikarnia</a>
+                    <p>Klucz -> link</p>
+                </div>
+            </div>
+            <br>
+            <br>
+        </div>
+    </body>
+</html>
