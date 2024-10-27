@@ -31,3 +31,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FIX_JAVASCRIPT_PRETTIER: true
           VALIDATE_ALL_CODEBASE: true
+          CSS_PRETTIER: false
+          HTML_PRETTIER: false
+          MARKDOWN_PRETTIER: false
+          YAML_PRETTIER: false
+          JAVASCRIPT_PRETTIER: false
+          JSON_PRETTIER: false
