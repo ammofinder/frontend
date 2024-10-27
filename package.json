@@ -2,11 +2,9 @@
   "name": "amunicja_pomorskie_frontend",
   "version": "1.0.0",
   "description": "Tldr: there is dobroni.org but it is aimed at stores from the south of the country, so I quickly made my own\r to scrapbook the Pomeranian stores that interest me.",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
-    "webpage": "live-server --port=8080 --entry-file=index.html",
-    "database": "node js/database.js",
-    "start": "concurrently \"npm run webpage\" \"npm run database\""
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",
@@ -20,9 +18,5 @@
     "express": "^4.21.1",
     "jquery": "^3.7.1",
     "mysql": "^2.18.1"
-  },
-  "devDependencies": {
-    "concurrently": "^9.0.1",
-    "live-server": "^1.2.0"
   }
 }

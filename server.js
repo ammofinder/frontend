@@ -1,6 +1,7 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -29,8 +30,14 @@ db.connect(err => {
     console.log('Connection to database successfull.');
 });
 
+app.use(express.static(path.join(__dirname)));
+
 // Main route with info about endpoints
 app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.get('/api', (req, res) => {
     res.send(`
         <h1>Database connection API server - amunicja_pomorskie_frontend</h1>
         <p>Available endpoints:</p>
