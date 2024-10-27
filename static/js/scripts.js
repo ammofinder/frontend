@@ -1,3 +1,8 @@
+/* global moment */
+/* global localStorage */
+/* global DataTable */
+/* global $ */
+
 $(document).ready(function () {
   const darkModeSwitch = $('#darkModeSwitch')
   const html = $('html')
@@ -125,5 +130,6 @@ $(document).ready(function () {
   })
 
   // Initial fetchData on 9x19
+  table.clear().draw()
   fetchData('9x19')
 })
