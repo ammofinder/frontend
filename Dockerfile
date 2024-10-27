@@ -18,5 +18,5 @@ USER appuser
 
 CMD ["npm", "run", "start"]
 
-HEALTHCHECK CMD --health-start-interval=30s \
-    curl -f http://localhost:3000 || exit 1
+HEALTHCHECK --health-start-interval=30s --timeout=3s \
+    CMD curl -f http://localhost:3000 || exit 1
