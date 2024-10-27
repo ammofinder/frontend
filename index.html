@@ -8,30 +8,6 @@
         <link rel="shortcut icon" href="./static/favicon.ico">
         <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="./node_modules/datatables.net-dt/css/dataTables.dataTables.css" />
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="./node_modules/datatables.net/js/dataTables.js"></script>
-        <script src="./node_modules/moment/min/moment.min.js"></script>
-        <script src="./static/js/scripts.js"></script>
-        <script>
-            function loadScript(url) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) { // If file exists
-                        const script = document.createElement('script');
-                        script.src = url;
-                        document.head.appendChild(script); // Add script to <head>
-                    } else {
-                        console.log(`Google Analytics config file ${url} was not found. Analytics disabled..`);
-                    }
-                };
-                xhr.onerror = function() {
-                    console.log(`An error occurred while trying to load the file ${url}.`);
-                };
-                xhr.send();
-            }
-            loadScript('analytics.js');
-        </script>
     </head>
     <body>
         <div class="container-custom mt-5">
@@ -105,5 +81,30 @@
             <br>
             <br>
         </div>
+        <!--Scripts section-->
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="./node_modules/datatables.net/js/dataTables.js"></script>
+        <script src="./node_modules/moment/min/moment.min.js"></script>
+        <script src="./static/js/scripts.js"></script>
+        <script>
+            function loadScript(url) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) { // If file exists
+                        const script = document.createElement('script');
+                        script.src = url;
+                        document.head.appendChild(script); // Add script to <head>
+                    } else {
+                        console.log(`Google Analytics config file ${url} was not found. Analytics disabled..`);
+                    }
+                };
+                xhr.onerror = function() {
+                    console.log(`An error occurred while trying to load the file ${url}.`);
+                };
+                xhr.send();
+            }
+            loadScript('analytics.js');
+        </script>
     </body>
 </html>

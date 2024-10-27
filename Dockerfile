@@ -10,9 +10,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN useradd -m appuser
-
-RUN npm install --only=production
+RUN npm install --only=production && \
+    useradd -m appuser
 
 USER appuser
 
