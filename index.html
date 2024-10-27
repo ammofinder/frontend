@@ -8,30 +8,6 @@
         <link rel="shortcut icon" href="./static/favicon.ico">
         <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="./node_modules/datatables.net-dt/css/dataTables.dataTables.css" />
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="./node_modules/datatables.net/js/dataTables.js"></script>
-        <script src="./node_modules/moment/min/moment.min.js"></script>
-        <script src="./static/js/scripts.js"></script>
-        <script>
-            function loadScript(url) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.onload = function() {
-                    if (xhr.status === 200) { // If file exists
-                        const script = document.createElement('script');
-                        script.src = url;
-                        document.head.appendChild(script); // Add script to <head>
-                    } else {
-                        console.log(`Google Analytics config file ${url} was not found. Analytics disabled..`);
-                    }
-                };
-                xhr.onerror = function() {
-                    console.log(`An error occurred while trying to load the file ${url}.`);
-                };
-                xhr.send();
-            }
-            loadScript('analytics.js');
-        </script>
     </head>
     <body>
         <div class="container-custom mt-5">
@@ -48,20 +24,20 @@
             </div>
 
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="dateFilter" checked>
-                <label class="form-check-label" for="dateFilter">
+                <input class="form-check-input" type="checkbox" id="date-filter" checked>
+                <label class="form-check-label" for="date-filter">
                     Wyświetl tylko produkty zaktualizowane w ciągu doby.
                     Jeśli nie zostały zaktualizowane, strona produktu mogła zniknąć ze sklepu = produkt nie istnieje.
                 </label>
             </div>
 
             <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" id="darkModeSwitch" checked>
-                <label class="form-check-label" for="darkModeSwitch">Tryb ciemny</label>
+                <input class="form-check-input" type="checkbox" id="dark-mode-switch" checked>
+                <label class="form-check-label" for="dark-mode-switch">Tryb ciemny</label>
             </div>
 
             <br>
-            <table id="produktyTable" class="display table table-bordered">
+            <table id="produkty-table" class="display table table-bordered">
                 <thead>
                     <tr>
                         <th>Kaliber</th>
@@ -91,19 +67,44 @@
             <div class="container-internal">
                 <div class="shop-card">
                     <a href="https://dixiepomerania.pl/?page_id=55" target="_blank">Dixie Pomerania</a>
-                    <p>Klucz -> nazwa produktu</p>
+                    <p>Klucz -&gt; nazwa produktu</p>
                 </div>
                 <div class="shop-card">
                     <a href="https://www.gardaarms.pl/produkty/amunicja/2-239" target="_blank">Garda Arms</a>
-                    <p>Klucz -> link</p>
+                    <p>Klucz -&gt; link</p>
                 </div>
                 <div class="shop-card">
                     <a href="https://rusznikarnia.eu/kategoria/amunicja/" target="_blank">Rusznikarnia</a>
-                    <p>Klucz -> link</p>
+                    <p>Klucz -&gt; link</p>
                 </div>
             </div>
             <br>
             <br>
         </div>
+        <!--Scripts section-->
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <script src="./node_modules/datatables.net/js/dataTables.js"></script>
+        <script src="./node_modules/moment/min/moment.min.js"></script>
+        <script src="./static/js/scripts.js"></script>
+        <script>
+            function loadScript(url) {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onload = function() {
+                    if (xhr.status === 200) { // If file exists
+                        const script = document.createElement('script');
+                        script.src = url;
+                        document.head.appendChild(script); // Add script to <head>
+                    } else {
+                        console.log(`Google Analytics config file ${url} was not found. Analytics disabled..`);
+                    }
+                };
+                xhr.onerror = function() {
+                    console.log(`An error occurred while trying to load the file ${url}.`);
+                };
+                xhr.send();
+            }
+            loadScript('analytics.js');
+        </script>
     </body>
 </html>
