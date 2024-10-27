@@ -2,7 +2,7 @@
   "name": "amunicja_pomorskie_frontend",
   "version": "1.0.0",
   "description": "Tldr: there is dobroni.org but it is aimed at stores from the south of the country, so I quickly made my own\r to scrapbook the Pomeranian stores that interest me.",
-  "main": "index.html",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
