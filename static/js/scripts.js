@@ -7,7 +7,7 @@ $(document).ready(function () {
   const darkModeSwitch = $('#dark-mode-switch')
   const html = $('html')
   const caliber = $('#caliber')
-  const dateFilter = $('#dateFilter')
+  const dateFilter = $('#date-filter')
 
   // Initial setup for dark mode on first visit
   if (localStorage.getItem('darkMode') === 'enabled') {
