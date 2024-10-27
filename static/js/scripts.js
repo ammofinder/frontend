@@ -4,8 +4,10 @@
 /* global $ */
 
 $(document).ready(function () {
-  const darkModeSwitch = $('#darkModeSwitch')
+  const darkModeSwitch = $('#dark-mode-switch')
   const html = $('html')
+  const caliber = $('#caliber')
+  const dateFilter = $('#dateFilter')
 
   // Initial setup for dark mode on first visit
   if (localStorage.getItem('darkMode') === 'enabled') {
@@ -48,7 +50,7 @@ $(document).ready(function () {
       type: 'GET',
       data: { caliber: typ, dateFilter: filterDate },
       success: function (response) {
-        $('#produktyTable').DataTable().clear().rows.add(response).draw()
+        $('#produkty-table').DataTable().clear().rows.add(response).draw()
       },
       error: function (err) {
         console.error('Error while fetching data:', err)
@@ -56,7 +58,7 @@ $(document).ready(function () {
     })
   }
 
-  const table = new DataTable('#produktyTable', {
+  const table = new DataTable('#produkty-table', {
     autoWidth: false,
     language: {
       decimal: ',',
@@ -115,18 +117,17 @@ $(document).ready(function () {
   })
 
   // Changing date switch when switching to new caliber
-  const dateFilter = $('#dateFilter')
-  $('#caliber').change(function () {
+  caliber.change(function () {
     if (!dateFilter.is(':checked')) {
-      $('#dateFilter').prop('checked', true)
+      dateFilter.prop('checked', true)
     }
     const filterDate = dateFilter.is(':checked')
-    fetchData($('#caliber').val(), filterDate)
+    fetchData(caliber.val(), filterDate)
   })
 
   dateFilter.change(function () {
     const filterDate = $(this).is(':checked')
-    fetchData($('#caliber').val(), filterDate)
+    fetchData(caliber.val(), filterDate)
   })
 
   // Initial fetchData on 9x19
