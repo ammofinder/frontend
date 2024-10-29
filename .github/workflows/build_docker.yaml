@@ -67,12 +67,11 @@ jobs:
         echo "DB_TABLE=example_table" >> .env
         echo "DB_PORT=3306" >> .env
         echo "NODE_ENV=production" >> .env
-        pwd
-        ls -la
 
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
       with:
+        context: .
         load: true
         tags: ${{ env.BUILD_TAG }}
 
@@ -99,9 +98,9 @@ jobs:
         fi
         echo "Test PASSED"
 
-#    - name: Remove container and local image
-#      if: always()
-#      run: |
-#        docker rm --force test
-#        docker rm --force mariadb
-#        docker rmi --force ${{ env.BUILD_TAG }}
+    - name: Remove container and local image
+      if: always()
+      run: |
+        docker rm --force test
+        docker rm --force mariadb
+        docker rmi --force ${{ env.BUILD_TAG }}
