@@ -49,10 +49,13 @@ jobs:
 
     - name: Initialize MariaDB with SQL script
       run: |
-        docker exec mariadb mariadb -e "CREATE DATABASE example_database;" -uroot -proot
-        docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
+        echo "Initialize database"
         cat .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
+        echo "Show databases"
+        docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
+        echo "Describe example_table"
         docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
+        echo "Show content of example_table"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
 
     - name: Create .env file with database settings
@@ -64,6 +67,8 @@ jobs:
         echo "DB_TABLE=example_table" >> .env
         echo "DB_PORT=3006" >> .env
         echo "NODE_ENV=production" >> .env
+        pwd
+        ls -la
 
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
@@ -98,4 +103,5 @@ jobs:
       if: always()
       run: |
         docker rm --force test
+        docker rm --force mariadb
         docker rmi --force ${{ env.BUILD_TAG }}
