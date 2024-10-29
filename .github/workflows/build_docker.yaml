@@ -50,7 +50,7 @@ jobs:
     - name: Initialize MariaDB with SQL script
       run: |
         echo "Initialize database"
-        cmd .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
+        cat .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
         echo "Show databases"
         docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
         echo "Describe example_table"
