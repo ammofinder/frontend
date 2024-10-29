@@ -100,9 +100,9 @@ jobs:
         fi
         echo "Test PASSED"
 
-#    - name: Remove container and local image
-#      if: always()
-#      run: |
-#        docker rm --force test
-#        docker rm --force mariadb
-#        docker rmi --force ${{ env.BUILD_TAG }}
+    - name: Remove container and local image
+      if: always()
+      run: |
+        docker rm --force test
+        docker rm --force mariadb
+        docker rmi --force ${{ env.BUILD_TAG }}
