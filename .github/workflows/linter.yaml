@@ -9,6 +9,9 @@ on:
 
 permissions: read-all
 
+env:
+  LINTER_RULES_PATH: .github/configs
+
 jobs:
   build:
     name: Lint
@@ -37,4 +40,4 @@ jobs:
           VALIDATE_JAVASCRIPT_PRETTIER: false
           VALIDATE_JSON_PRETTIER: false
           MULTI_STATUS: false
-          SQLFLUFF_CONFIG_FILE: $GITHUB_WORKSPACE/.github/configs/.sqlfluff
+          SQLFLUFF_CONFIG_FILE: .sqlfluff
