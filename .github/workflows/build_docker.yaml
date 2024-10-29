@@ -23,14 +23,14 @@ jobs:
       statuses: write
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-
-    - name: Checkout
-      uses: actions/checkout@v4
 
     - name: Setup mariadb container
       run: |
@@ -50,9 +50,9 @@ jobs:
     - name: Initialize MariaDB with SQL script
       run: |
         echo "Initialize database"
-        cat .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
+        docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
         echo "Show databases"
-        docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
+        docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
         echo "Describe example_table"
         docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
         echo "Show content of example_table"
@@ -60,14 +60,17 @@ jobs:
 
     - name: Create .env file with database settings
       run: |
-        DB_HOST=$(docker exec mariadb hostname -I) && echo "DB_HOST=$DB_HOST" >> .env
-        echo "DB_USER=root" >> .env
-        echo "DB_PASSWORD=root" >> .env
-        echo "DB_DATABASE=example_database" >> .env
-        echo "DB_TABLE=example_table" >> .env
-        echo "DB_PORT=3306" >> .env
-        echo "NODE_ENV=production" >> .env
-        echo ".env file:"
+        {
+            DB_HOST=$(docker exec mariadb hostname -I)
+            echo "DB_HOST=$DB_HOST"
+            echo "DB_USER=root"
+            echo "DB_PASSWORD=root"
+            echo "DB_DATABASE=example_database"
+            echo "DB_TABLE=example_table"
+            echo "DB_PORT=3306"
+            echo "NODE_ENV=production"
+        } >> .env
+        echo ".env file generated:"
         cat .env
 
     - name: Build and export to Docker

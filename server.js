@@ -81,30 +81,30 @@ app.get('/status', (req, res) => {
 
   // Check for webserver availability
   const request = http.get(options, (response) => {
-    const mainPageStatus = response.statusCode === 200 ? 'ACTIVE' : 'INACTIVE';
+    const mainPageStatus = response.statusCode === 200 ? 'ACTIVE' : 'INACTIVE'
 
     pool.getConnection((err, connection) => {
-      const dbStatus = err ? 'INACTIVE' : 'ACTIVE';
-      if (connection) connection.release();
+      const dbStatus = err ? 'INACTIVE' : 'ACTIVE'
+      if (connection) connection.release()
 
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json')
       res.send(JSON.stringify({
         'Main page status': mainPageStatus,
         'Database connection': dbStatus
-      }, null, 2));  // The `2` here adds indentation for better readability
-    });
-  });
+      }, null, 2)) // The 2 here adds indentation for better readability
+    })
+  })
 
   request.on('error', () => {
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Type', 'application/json')
     res.send(JSON.stringify({
       'Main page status': 'ERROR',
       'Database connection': 'ERROR'
-    }, null, 2));
-  });
+    }, null, 2))
+  })
 
-  request.end();
-});
+  request.end()
+})
 
 // Handling GET request for data retrival from database
 app.get('/getData', (req, res) => {
