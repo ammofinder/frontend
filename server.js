@@ -89,7 +89,7 @@ app.get('/status', (req, res) => {
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({
-        'Webserver status': mainPageStatus,
+        'Main page status': mainPageStatus,
         'Database connection': dbStatus
       }, null, 2));  // The `2` here adds indentation for better readability
     });
@@ -98,7 +98,7 @@ app.get('/status', (req, res) => {
   request.on('error', () => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
-      'Webserver status': 'ERROR',
+      'Main page status': 'ERROR',
       'Database connection': 'ERROR'
     }, null, 2));
   });
