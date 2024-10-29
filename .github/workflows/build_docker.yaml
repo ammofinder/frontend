@@ -48,7 +48,7 @@ jobs:
         timeout: 120
 
     - name: Verify if working
-      run: curl -f http://localhost:3000 || exit 1
+      run: curl -f http://localhost:3000/status || exit 1
 
     - name: Remove container and local image
       if: always()
