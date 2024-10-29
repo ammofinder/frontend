@@ -81,7 +81,7 @@ app.get('/status', (req, res) => {
 
   // Check for webserver availability
   const request = http.get(options, (response) => {
-    const webServerStatus = response.statusCode === 200 ? 'ACTIVE' : 'INACTIVE';
+    const mainPageStatus = response.statusCode === 200 ? 'ACTIVE' : 'INACTIVE';
 
     pool.getConnection((err, connection) => {
       const dbStatus = err ? 'INACTIVE' : 'ACTIVE';
@@ -89,7 +89,7 @@ app.get('/status', (req, res) => {
 
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify({
-        'Webserver status': webServerStatus,
+        'Webserver status': mainPageStatus,
         'Database connection': dbStatus
       }, null, 2));  // The `2` here adds indentation for better readability
     });
@@ -98,8 +98,8 @@ app.get('/status', (req, res) => {
   request.on('error', () => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify({
-      'Webserver status': 'INACTIVE',
-      'Database connection': 'INACTIVE'
+      'Webserver status': 'ERROR',
+      'Database connection': 'ERROR'
     }, null, 2));
   });
 
