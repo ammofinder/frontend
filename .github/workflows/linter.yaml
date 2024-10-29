@@ -12,7 +12,7 @@ permissions: read-all
 jobs:
   build:
     name: Lint
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read
@@ -23,7 +23,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+        fetch-depth: 0
+
+      - name: Cache Docker images.
+        uses: ScribeMD/docker-cache@0.5.0
+        with:
+          key: docker-${{ runner.os }}-npm-${{ hashFiles('package.json') }}
 
       - name: Super-linter
         uses: super-linter/super-linter/slim@v7
