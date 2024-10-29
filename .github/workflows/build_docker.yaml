@@ -47,4 +47,4 @@ jobs:
       if: always()
       run: |
         docker rm --force test
-        docker rmi --force $DOCKER_IMAGE_NAME:$RELEASE_VERSION
+        docker rmi --force $BUILD_TAG
