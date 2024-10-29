@@ -1,0 +1,35 @@
+---
+name: Docker image
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  DOCKER_IMAGE_NAME: wkobiela/ammo_front
+  BUILD_TAG: PR-${{ github.event.number }
+
+jobs:
+  build:
+    name: Build Docker image
+    # Runner to use
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag $DOCKER_IMAGE_NAME:$BUILD_TAG
+
+
+    - name: Run Docker container
+      run: docker run -d -p 3000:3000 $DOCKER_IMAGE_NAME:$BUILD_TAG
+
+    - name: Verify if working
+      run: curl -f http://localhost:3000 || exit 1
+
+    - name: Remove the local image
+      run: docker rmi $DOCKER_IMAGE_NAME:$RELEASE_VERSION
