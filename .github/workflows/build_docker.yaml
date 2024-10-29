@@ -7,6 +7,8 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions: read-all
+
 env:
   BUILD_TAG: wkobiela/ammo_front:PR-${{ github.event.number }}
 
@@ -14,6 +16,11 @@ jobs:
   build:
     name: Build image
     runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
 
     steps:
     - name: Set up QEMU
@@ -32,7 +39,7 @@ jobs:
         tags: ${{ env.BUILD_TAG }}
 
     - name: Run Docker container
-      run: docker run --name test --rm -d -p 3000:3000 $BUILD_TAG
+      run: docker run --name test --rm -d -p 3000:3000 ${{ env.BUILD_TAG }}
 
     - name: Wait until the container is healthy
       uses: raschmitt/wait-for-healthy-container/@master
@@ -47,4 +54,4 @@ jobs:
       if: always()
       run: |
         docker rm --force test
-        docker rmi --force $BUILD_TAG
+        docker rmi --force ${{ env.BUILD_TAG }}
