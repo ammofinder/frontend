@@ -1,0 +1,57 @@
+---
+name: Docker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions: read-all
+
+env:
+  BUILD_TAG: wkobiela/ammo_front:PR-${{ github.event.number }}
+
+jobs:
+  build:
+    name: Build image
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Build and export to Docker
+      uses: docker/build-push-action@v6
+      with:
+        load: true
+        tags: ${{ env.BUILD_TAG }}
+
+    - name: Run Docker container
+      run: docker run --name test --rm -d -p 3000:3000 ${{ env.BUILD_TAG }}
+
+    - name: Wait until the container is healthy
+      uses: raschmitt/wait-for-healthy-container/@master
+      with:
+        container-name: test
+        timeout: 120
+
+    - name: Verify if working
+      run: curl -f http://localhost:3000 || exit 1
+
+    - name: Remove container and local image
+      if: always()
+      run: |
+        docker rm --force test
+        docker rmi --force ${{ env.BUILD_TAG }}
