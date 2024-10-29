@@ -60,7 +60,7 @@ jobs:
 
     - name: Create .env file with database settings
       run: |
-        echo "DB_HOST=localhost" >> .env
+        echo "DB_HOST=mariadb" >> .env
         echo "DB_USER=root" >> .env
         echo "DB_PASSWORD=root" >> .env
         echo "DB_DATABASE=example_database" >> .env
