@@ -4,6 +4,7 @@ const cors = require('cors')
 const path = require('path')
 const winston = require('winston')
 const morgan = require('morgan')
+const http = require('http')
 
 const app = express()
 const port = 3000
@@ -68,6 +69,42 @@ app.get('/api', (req, res) => {
         </ul>
     `)
 })
+
+app.get('/status', (req, res) => {
+  // Check if the main page ("/") is available
+  const options = {
+    host: 'localhost',
+    port: port,
+    path: '/',
+    timeout: 2000
+  }
+
+  // Check for webserver availability
+  const request = http.get(options, (response) => {
+    const webServerStatus = response.statusCode === 200 ? 'ACTIVE' : 'INACTIVE';
+
+    pool.getConnection((err, connection) => {
+      const dbStatus = err ? 'INACTIVE' : 'ACTIVE';
+      if (connection) connection.release();
+
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify({
+        'Webserver status': webServerStatus,
+        'Database connection': dbStatus
+      }, null, 2));  // The `2` here adds indentation for better readability
+    });
+  });
+
+  request.on('error', () => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({
+      'Webserver status': 'INACTIVE',
+      'Database connection': 'INACTIVE'
+    }, null, 2));
+  });
+
+  request.end();
+});
 
 // Handling GET request for data retrival from database
 app.get('/getData', (req, res) => {
