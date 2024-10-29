@@ -34,7 +34,7 @@ jobs:
 
     - name: Setup mariadb container
       run: |
-        docker run --name mariadb --rm -d -p 3006:3006 \
+        docker run --name mariadb --rm -d -p 3306:3306 \
         -e MYSQL_ROOT_PASSWORD=root \
         --health-cmd="healthcheck.sh --connect --innodb_initialized" \
         --health-interval=10s \
@@ -50,7 +50,7 @@ jobs:
     - name: Initialize MariaDB with SQL script
       run: |
         echo "Initialize database"
-        cat .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
+        cmd .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
         echo "Show databases"
         docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
         echo "Describe example_table"
@@ -65,7 +65,7 @@ jobs:
         echo "DB_PASSWORD=root" >> .env
         echo "DB_DATABASE=example_database" >> .env
         echo "DB_TABLE=example_table" >> .env
-        echo "DB_PORT=3006" >> .env
+        echo "DB_PORT=3306" >> .env
         echo "NODE_ENV=production" >> .env
         pwd
         ls -la
@@ -93,15 +93,15 @@ jobs:
         main_page_status=$(echo "$response" | jq -r '.["Main page status"]')
         db_status=$(echo "$response" | jq -r '.["Database connection"]')
 
-        if [[ "$main_page_status" != "ACTIVE" || "$db_stat_s" != "ACTIVE" ]]; then
+        if [[ "$main_page_status" != "ACTIVE" || "$db_status" != "ACTIVE" ]]; then
           echo "Error: One or both services are not ACTIVE"
           exit 1
         fi
         echo "Test PASSED"
 
-    - name: Remove container and local image
-      if: always()
-      run: |
-        docker rm --force test
-        docker rm --force mariadb
-        docker rmi --force ${{ env.BUILD_TAG }}
+#    - name: Remove container and local image
+#      if: always()
+#      run: |
+#        docker rm --force test
+#        docker rm --force mariadb
+#        docker rmi --force ${{ env.BUILD_TAG }}
