@@ -8,8 +8,7 @@ on:
     branches: [ "master" ]
 
 env:
-  DOCKER_IMAGE_NAME: wkobiela/ammo_front
-  BUILD_TAG: PR-${{ github.event.number }}
+  BUILD_TAG: wkobiela/ammo_front:PR-${{ github.event.number }}
 
 jobs:
   build:
@@ -30,7 +29,7 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         load: true
-        tags: $DOCKER_IMAGE_NAME:$BUILD_TAG
+        tags: ${{ BUILD_TAG }}
 
     - name: Run Docker container
       run: docker run --name test -rm -d -p 3000:3000 $DOCKER_IMAGE_NAME:$BUILD_TAG
