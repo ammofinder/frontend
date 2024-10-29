@@ -37,3 +37,4 @@ jobs:
           VALIDATE_JAVASCRIPT_PRETTIER: false
           VALIDATE_JSON_PRETTIER: false
           MULTI_STATUS: false
+          SQLFLUFF_CONFIG_FILE: .github/configs/.sqlfluff

@@ -49,13 +49,13 @@ jobs:
 
     - name: Initialize MariaDB with SQL script
       run: |
-        echo "Initialize database"
+        echo "Initialize database -> pushing initialize_db.sql to MariaDB instance."
         docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
-        echo "Show databases"
+        echo "Show databases ->"
         docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
-        echo "Describe example_table"
+        echo "Describe example_table ->"
         docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
-        echo "Show content of example_table"
+        echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
 
     - name: Create .env file with database settings
