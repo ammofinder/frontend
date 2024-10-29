@@ -9,7 +9,7 @@ on:
 
 env:
   DOCKER_IMAGE_NAME: wkobiela/ammo_front
-  BUILD_TAG: PR-${{ github.event.number }
+  BUILD_TAG: PR-${{ github.event.number }}
 
 jobs:
   build:
