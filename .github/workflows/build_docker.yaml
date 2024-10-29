@@ -32,6 +32,39 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Setup mariadb container
+      run: |
+        docker run --name mariadb --rm -d -p 3006:3006 \
+        -e MYSQL_ROOT_PASSWORD=root \
+        --health-cmd="healthcheck.sh --connect --innodb_initialized" \
+        --health-interval=10s \
+        --health-timeout=5s --health-retries=3 \
+        mariadb:latest
+
+    - name: Wait until mariadb container is healthy
+      uses: raschmitt/wait-for-healthy-container/@master
+      with:
+        container-name: mariadb
+        timeout: 120
+
+    - name: Initialize MariaDB with SQL script
+      run: |
+        docker exec mariadb mariadb -e "CREATE DATABASE example_database;" -uroot -proot
+        docker exec mariadb mariadb -e "SHOW DATABASES;" -uroot -proot
+        cat .github/configs/initialize_db.sql | docker exec -i mariadb mariadb -uroot -proot
+        docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
+        docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
+
+    - name: Create .env file with database settings
+      run: |
+        echo "DB_HOST=localhost" >> .env
+        echo "DB_USER=root" >> .env
+        echo "DB_PASSWORD=root" >> .env
+        echo "DB_DATABASE=example_database" >> .env
+        echo "DB_TABLE=example_table" >> .env
+        echo "DB_PORT=3006" >> .env
+        echo "NODE_ENV=production" >> .env
+
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
       with:
@@ -55,8 +88,7 @@ jobs:
         main_page_status=$(echo "$response" | jq -r '.["Main page status"]')
         db_status=$(echo "$response" | jq -r '.["Database connection"]')
 
-        echo "Database connection may be inactive. This check is disabled."
-        if [[ "$main_page_status" != "ACTIVE" ]]; then
+        if [[ "$main_page_status" != "ACTIVE" || "$db_stat_s" != "ACTIVE" ]]; then
           echo "Error: One or both services are not ACTIVE"
           exit 1
         fi
