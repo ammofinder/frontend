@@ -57,10 +57,12 @@ jobs:
         docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
         echo "Show content of example_table"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
+        echo "Get IP address of container"
+        DB_HOST=$(docker exec mariadb hostname -I)
 
     - name: Create .env file with database settings
       run: |
-        echo "DB_HOST=mariadb" >> .env
+        echo "DB_HOST=$DB_HOST" >> .env
         echo "DB_USER=root" >> .env
         echo "DB_PASSWORD=root" >> .env
         echo "DB_DATABASE=example_database" >> .env
