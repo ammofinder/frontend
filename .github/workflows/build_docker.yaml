@@ -54,8 +54,10 @@ jobs:
             SKIP="false"
             echo "File $file should be tested."
             if [[ $file == ".github/workflows/build_docker.yaml" ]]; then
+              echo "build_docker recognized"
               echo "dryrun=true" >> "$GITHUB_OUTPUT"
             else
+              echo "build_docker not recognized"
               echo "dryrun=false" >> "$GITHUB_OUTPUT"
             fi
             break
