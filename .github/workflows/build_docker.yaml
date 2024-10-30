@@ -53,11 +53,11 @@ jobs:
 
         if [[ $SKIP == "true" ]]; then
           echo "skip_job=true" >> "$GITHUB_OUTPUT"
+          echo "Job will be skipped."
         else
           echo "skip_job=false" >> "$GITHUB_OUTPUT"
+          echo "Job won't be skipped."
         fi
-
-        echo "$GITHUB_OUTPUT"
 
   build:
     name: Build image
