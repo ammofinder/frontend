@@ -9,13 +9,45 @@ on:
 
 permissions: read-all
 
-env:
-  BUILD_TAG: wkobiela/ammo_front:PR-${{ github.event.number }}
-
 jobs:
+  check-files:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_job: ${{ steps.check.outputs.skip_job }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Check if only ignored files were changed
+      id: check
+      run: |
+        git fetch origin ${{ github.base_ref }} --depth=1
+        CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }})
+
+        SKIP_FILES=$(cat .github/configs/skip-files.txt | tr '\n' ' ')
+
+        for file in "$CHANGED_FILES"; do
+          for pattern in "$SKIP_FILES"; do
+            if [[ $file == $pattern ]]; then
+              SKIP="true"
+            else
+              SKIP="false"
+              break
+            fi
+          done
+        done
+
+        if [[ $SKIP == "true" ]]; then
+          echo "skip_job=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "skip_job=false" >> "$GITHUB_OUTPUT"
+        fi
+
   build:
     name: Build image
     runs-on: self-hosted
+    if: ${{ needs.check-files.outputs.skip_job == 'false' }}
 
     permissions:
       contents: read
