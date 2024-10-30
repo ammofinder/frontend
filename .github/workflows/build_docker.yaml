@@ -57,9 +57,12 @@ jobs:
           echo "skip_job=false" >> "$GITHUB_OUTPUT"
         fi
 
+        echo $GITHUB_OUTPUT"
+
   build:
     name: Build image
     runs-on: self-hosted
+    needs: check-files
     if: ${{ needs.check-files.outputs.skip_job == 'false' }}
 
     permissions:
