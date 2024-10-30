@@ -39,11 +39,18 @@ jobs:
         
         SKIP="true"
         for file in "${CHANGED_FILES[@]}"; do
+          match_found=false
           for pattern in "${SKIP_FILES[@]}"; do
-            if [[ $file != $pattern ]]; then
-              SKIP="false"
+            if [[ $file == $pattern ]]; then
+              match_found=true
+              break  # Przerywamy, gdy znajdziemy dopasowanie
             fi
           done
+
+          if [[ $match_found == false ]]; then
+            SKIP="false"
+            break  # Przerywamy, gdy chociaż jeden plik nie pasuje
+          fi
         done
 
         if [[ $SKIP == "true" ]]; then
