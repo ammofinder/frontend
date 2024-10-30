@@ -32,17 +32,17 @@ jobs:
 
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
           BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
-          echo "BUILD_TAG=$BUILD_TAG" >> $GITHUB_ENV
-          echo "PUSH_TAG=$BUILD_TAG" >> $GITHUB_ENV
+          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
+          echo "PUSH_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
           echo "PUSH_TAG is $BUILD_TAG"
 
         elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-          SHORT_COMMIT="${{ github.sha:0:7 }}"
+          SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
-          echo "BUILD_TAG=$BUILD_TAG" >> $GITHUB_ENV
+          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           LATEST_TAG="$IMAGE:latest"
-          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> $GITHUB_ENV
+          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
           echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
         fi

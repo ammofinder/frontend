@@ -47,7 +47,7 @@ app.use(morgan('combined', { stream: logger.stream }))
 
 // Check if env variable are available
 if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_DATABASE || !process.env.DB_PORT) {
-  console.error("Missing required environment variables.")
+  console.error('Missing required environment variables.')
   process.exit(1)
 }
 

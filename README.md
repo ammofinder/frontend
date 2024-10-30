@@ -7,9 +7,14 @@ This is my first ever project in Bootstrap/js, feel free to join.
 
 ## How to run - Docker image ready for deployment
 
-Docker images are built in this repository CI, and after push to master are published to Docker Hub with tags:
-- day.month.year
+Docker images are built within this repository CI job, and published to Docker Hub with tags:
+
+For master:
+- master-short_sha
 - latest
+
+For PRs:
+- PR-pr_number
 
 To run application, start Docker container with following environment variables passed:
 
@@ -90,7 +95,7 @@ npm run start
 ```
 
 
-### Repository is using super-linter GHA job. For local linting:
+### Repository is using super-linter GHA job. Use below linters for local linting.
 - CSS
 ```bash
 npm stylelint init
