@@ -5,12 +5,16 @@ const path = require('path')
 const winston = require('winston')
 const morgan = require('morgan')
 const http = require('http')
-
+const fs = require('fs')
 const app = express()
 const port = 3000
 
-// Load .env variables
-require('dotenv').config()
+// Load .env variables if .env file exists, otherwise try to use system env variables
+if (fs.existsSync('.env')) {
+  require('dotenv').config()
+} else {
+  console.log('.env file not found, using environment variables.')
+}
 
 // Use middleware CORS, to automatically set Access-Control-Allow-Origin header
 const corsOptions = {
@@ -40,6 +44,12 @@ logger.stream = {
 
 // Use morgan to save logs to files
 app.use(morgan('combined', { stream: logger.stream }))
+
+// Check if env variable are available
+if (!process.env.DB_HOST || !process.env.DB_USER || !process.env.DB_PASSWORD || !process.env.DB_DATABASE || !process.env.DB_PORT) {
+  console.error('Missing required environment variables.')
+  process.exit(1)
+}
 
 // Database connection config, using environment variables
 const pool = mysql.createPool({
