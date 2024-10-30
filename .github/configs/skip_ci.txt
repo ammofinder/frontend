@@ -1,6 +1,6 @@
 **/*.md
 linter.yaml
 .github/configs/**
-build_docker.yaml
+**/build_docker.yaml
 .github/configs/skip_ci.txt
 .github/workflows/build_docker.yaml
