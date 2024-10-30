@@ -68,7 +68,8 @@ jobs:
         echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
         echo "Get mariadb hostname IP address ->"
-        DB_HOST=$(docker exec mariadb hostname -I)
+        echo "DB_HOST=$(docker exec mariadb hostname -I)" >> $GITHUB_ENV
+        echo ${{ env.DB_HOST }}
 
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
@@ -80,7 +81,7 @@ jobs:
     - name: Run Docker container
       run: |
         docker run --name test --rm -d -p 3000:3000 \
-        -e DB_HOST=$DB_HOST \
+        -e DB_HOST=${{ env.DB_HOST }} \
         -e DB_USER=root \
         -e DB_PASSWORD=root \
         -e DB_DATABASE=example_database \
