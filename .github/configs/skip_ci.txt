@@ -1,5 +1,5 @@
 **/.sqlfluff
-**/.skip_ci.txt
+**/skip_ci.txt
 **/linter.yaml
 **/dependabot.yml
 .dockerignore
