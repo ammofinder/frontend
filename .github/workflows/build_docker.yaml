@@ -11,6 +11,7 @@ permissions: read-all
 
 jobs:
   check-files:
+    name: Smart CI
     runs-on: ubuntu-latest
     outputs:
       skip_job: ${{ steps.check.outputs.skip_job }}
