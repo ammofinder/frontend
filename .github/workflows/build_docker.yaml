@@ -41,6 +41,7 @@ jobs:
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
+            # shellcheck disable=SC2053
             if [[ $file == $pattern ]]; then
                 match_found=true
                 echo "Match found! $file matching $pattern"
