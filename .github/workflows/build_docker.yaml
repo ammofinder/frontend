@@ -33,9 +33,9 @@ jobs:
       id: check
       run: |
         IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "${{ steps.changed-files.outputs.all_changed_files }}"
-        echo "Changed files: $CHANGED_FILES_ARRAY"
+        echo "Changed files: $CHANGED_FILES_ARRAY[@]"
         IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
-        echo "Skip files list: $SKIP_FILES_ARRAY"
+        echo "Skip files list: $SKIP_FILES_ARRAY[@]"
 
         SKIP="false"
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
