@@ -86,9 +86,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Check if dryrun
-      run: echo "Result of dryrun output var ${DRURUN}"
-      env:
-        DRURUN: ${{ needs.check-files.outputs.drurun }}
+      if: ${{ needs.check-files.outputs.drurun == 'true' }}
+      run: echo "Dryrun is set to true"
+
+    - name: Check if dryrun
+      if: ${{ needs.check-files.outputs.drurun == 'false' }}
+      run: echo "Dryrun is set to false"
+
 #
 #    - name: Set BUILD_TAG
 #      run: |
