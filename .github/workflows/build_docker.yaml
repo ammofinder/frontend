@@ -39,14 +39,12 @@ jobs:
 
         SKIP="false"
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
-          echo "$file"
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            echo "Testing $file against $pattern"
             case $file in
               $pattern)
                 match_found=true
-                echo "Match found! $pattern matching $file"
+                echo "Match found! $file matching $pattern"
                 break
                 ;;
             esac
@@ -55,6 +53,7 @@ jobs:
             SKIP="true"
           else
             SKIP="false"
+            echo "File $file should be tested."
             break
           fi
         done
