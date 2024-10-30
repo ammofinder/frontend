@@ -33,7 +33,7 @@ jobs:
       run: |
         CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
         echo "Changed files: $CHANGED_FILES"
-        SKIP_FILES="$(cat .github/configs/skip-files.txt | tr '\n' ' ')"
+        SKIP_FILES="$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
         echo "Skip files list: $SKIP_FILES"
         
         for file in "$CHANGED_FILES"; do
