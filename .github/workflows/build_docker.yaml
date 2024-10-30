@@ -29,6 +29,8 @@ jobs:
     - name: Set BUILD_TAG
       run: |
         IMAGE="wkobiela/ammo_front"
+        LATEST_TAG="$IMAGE:latest"
+        echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
 
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
           BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
@@ -41,7 +43,6 @@ jobs:
           SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          LATEST_TAG="$IMAGE:latest"
           echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
           echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
@@ -139,4 +140,4 @@ jobs:
         docker rm --force test
         docker rm --force mariadb
         docker rmi --force ${{ env.BUILD_TAG }}
-        docker rmi --force ${{ env.PUSH_TAG }}
+        docker rmi --force ${{ env.LATEST_TAG }}
