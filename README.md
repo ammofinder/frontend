@@ -95,7 +95,7 @@ npm run start
 ```
 
 
-### Repository is using super-linter GHA job. Use below linters for local linting.
+### Repository is using super-linter GHA job - how to lint locally?
 - CSS
 ```bash
 npm stylelint init
