@@ -72,6 +72,11 @@ jobs:
           echo "Job won't be skipped."
         fi
 
+    - name: Get Multiple color
+      run: |
+        echo "The dryrun param is ${{ steps.check.outputs.dryrun }}"
+        echo "The skip_job param is ${{ steps.check.outputs.skip_job }}"
+
   build:
     name: Build image
     runs-on: self-hosted
