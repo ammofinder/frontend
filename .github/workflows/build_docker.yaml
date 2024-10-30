@@ -32,16 +32,12 @@ jobs:
     - name: Check if only ignored files were changed
       id: check
       run: |
-        CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
-        echo "Changed files: $CHANGED_FILES"
-        SKIP_FILES="$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
-        echo "Skip files list: $SKIP_FILES"
-        
-        IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "$CHANGED_FILES"
-        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$SKIP_FILES"
+        IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "${{ steps.changed-files.outputs.all_changed_files }}"
+        echo "Changed files: $CHANGED_FILES_ARRAY"
+        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
+        echo "Skip files list: $SKIP_FILES_ARRAY"
 
         SKIP="false"
-
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           echo "$file"
           match_found=false
@@ -50,6 +46,7 @@ jobs:
             case $file in
               $pattern)
                 match_found=true
+                echo "Match found! $pattern matching $file"
                 break
                 ;;
             esac
