@@ -40,8 +40,10 @@ jobs:
         SKIP="false"
 
         for file in "${CHANGED_FILES[@]}"; do
+          echo "$file"
           match_found=false
           for pattern in "${SKIP_FILES[@]}"; do
+            echo "Testing $file against $pattern"
             case $file in
               $pattern)
                 match_found=true
@@ -65,133 +67,133 @@ jobs:
           echo "Job won't be skipped."
         fi
 
-  build:
-    name: Build image
-    runs-on: self-hosted
-    needs: check-files
-    if: ${{ needs.check-files.outputs.skip_job == 'false' }}
-
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-
-    - name: Set BUILD_TAG
-      run: |
-        IMAGE="wkobiela/ammo_front"
-        LATEST_TAG="$IMAGE:latest"
-        echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
-
-        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
-          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG"
-
-        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-          SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
-          BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
-          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
-          echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
-        fi
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-
-    - name: Setup mariadb container
-      run: |
-        docker run --name mariadb --rm -d -p 3306:3306 \
-        -e MYSQL_ROOT_PASSWORD=root \
-        --health-cmd="healthcheck.sh --connect --innodb_initialized" \
-        --health-interval=10s \
-        --health-timeout=5s --health-retries=3 \
-        mariadb:latest
-
-    - name: Wait until mariadb container is healthy
-      uses: raschmitt/wait-for-healthy-container/@master
-      with:
-        container-name: mariadb
-        timeout: 120
-
-    - name: Initialize MariaDB with SQL script
-      run: |
-        echo "Initialize database -> pushing initialize_db.sql to MariaDB instance."
-        docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
-        echo "Show databases ->"
-        docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
-        echo "Describe example_table ->"
-        docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
-        echo "Show content of example_table ->"
-        docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
-        echo "Get mariadb hostname IP address ->"
-        DB_HOST=$(docker exec mariadb hostname -I | awk '{print $1}')
-        echo "DB_HOST=$DB_HOST" >> "$GITHUB_ENV"
-        echo "DB_HOST=$DB_HOST"
-
-    - name: Build and export to Docker
-      uses: docker/build-push-action@v6
-      with:
-        context: ${{ github.workspace }}
-        load: true
-        tags: ${{ env.BUILD_TAG }}
-
-    - name: Run Docker container
-      run: |
-        docker run --name test --rm -d -p 3000:3000 \
-        -e DB_HOST=${{ env.DB_HOST }} \
-        -e DB_USER=root \
-        -e DB_PASSWORD=root \
-        -e DB_DATABASE=example_database \
-        -e DB_TABLE=example_table \
-        -e DB_PORT=3306 \
-        ${{ env.BUILD_TAG }}
-
-    - name: Wait until the container is healthy
-      uses: raschmitt/wait-for-healthy-container/@master
-      with:
-        container-name: test
-        timeout: 120
-
-    - name: Verify if working
-      run: |
-        response=$(curl -s http://localhost:3000/status || exit 1)
-        echo "Server response: $response"
-
-        main_page_status=$(echo "$response" | jq -r '.["Main page status"]')
-        db_status=$(echo "$response" | jq -r '.["Database connection"]')
-
-        if [[ "$main_page_status" != "ACTIVE" || "$db_status" != "ACTIVE" ]]; then
-          echo "Error: One or both services are not ACTIVE"
-          exit 1
-        fi
-        echo "Test PASSED"
-
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Push to Docker Hub
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        tags: ${{ env.PUSH_TAG }}
-
-    - name: Remove container and local image
-      if: always()
-      run: |
-        docker rm --force test
-        docker rm --force mariadb
-        docker rmi --force ${{ env.BUILD_TAG }}
-        docker rmi --force ${{ env.LATEST_TAG }}
+#  build:
+#    name: Build image
+#    runs-on: self-hosted
+#    needs: check-files
+#    if: ${{ needs.check-files.outputs.skip_job == 'false' }}
+#
+#    permissions:
+#      contents: read
+#      packages: read
+#      statuses: write
+#
+#    steps:
+#    - name: Checkout
+#      uses: actions/checkout@v4
+#
+#    - name: Set BUILD_TAG
+#      run: |
+#        IMAGE="wkobiela/ammo_front"
+#        LATEST_TAG="$IMAGE:latest"
+#        echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
+#
+#        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+#          BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
+#          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
+#          echo "PUSH_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
+#          echo "BUILD_TAG is $BUILD_TAG"
+#          echo "PUSH_TAG is $BUILD_TAG"
+#
+#        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+#          SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
+#          BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
+#          echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
+#          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
+#          echo "BUILD_TAG is $BUILD_TAG"
+#          echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
+#        fi
+#
+#    - name: Set up QEMU
+#      uses: docker/setup-qemu-action@v3
+#
+#    - name: Set up Docker Buildx
+#      uses: docker/setup-buildx-action@v3
+#
+#    - name: Setup mariadb container
+#      run: |
+#        docker run --name mariadb --rm -d -p 3306:3306 \
+#        -e MYSQL_ROOT_PASSWORD=root \
+#        --health-cmd="healthcheck.sh --connect --innodb_initialized" \
+#        --health-interval=10s \
+#        --health-timeout=5s --health-retries=3 \
+#        mariadb:latest
+#
+#    - name: Wait until mariadb container is healthy
+#      uses: raschmitt/wait-for-healthy-container/@master
+#      with:
+#        container-name: mariadb
+#        timeout: 120
+#
+#    - name: Initialize MariaDB with SQL script
+#      run: |
+#        echo "Initialize database -> pushing initialize_db.sql to MariaDB instance."
+#        docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
+#        echo "Show databases ->"
+#        docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
+#        echo "Describe example_table ->"
+#        docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
+#        echo "Show content of example_table ->"
+#        docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
+#        echo "Get mariadb hostname IP address ->"
+#        DB_HOST=$(docker exec mariadb hostname -I | awk '{print $1}')
+#        echo "DB_HOST=$DB_HOST" >> "$GITHUB_ENV"
+#        echo "DB_HOST=$DB_HOST"
+#
+#    - name: Build and export to Docker
+#      uses: docker/build-push-action@v6
+#      with:
+#        context: ${{ github.workspace }}
+#        load: true
+#        tags: ${{ env.BUILD_TAG }}
+#
+#    - name: Run Docker container
+#      run: |
+#        docker run --name test --rm -d -p 3000:3000 \
+#        -e DB_HOST=${{ env.DB_HOST }} \
+#        -e DB_USER=root \
+#        -e DB_PASSWORD=root \
+#        -e DB_DATABASE=example_database \
+#        -e DB_TABLE=example_table \
+#        -e DB_PORT=3306 \
+#        ${{ env.BUILD_TAG }}
+#
+#    - name: Wait until the container is healthy
+#      uses: raschmitt/wait-for-healthy-container/@master
+#      with:
+#        container-name: test
+#        timeout: 120
+#
+#    - name: Verify if working
+#      run: |
+#        response=$(curl -s http://localhost:3000/status || exit 1)
+#        echo "Server response: $response"
+#
+#        main_page_status=$(echo "$response" | jq -r '.["Main page status"]')
+#        db_status=$(echo "$response" | jq -r '.["Database connection"]')
+#
+#        if [[ "$main_page_status" != "ACTIVE" || "$db_status" != "ACTIVE" ]]; then
+#          echo "Error: One or both services are not ACTIVE"
+#          exit 1
+#        fi
+#        echo "Test PASSED"
+#
+#    - name: Login to Docker Hub
+#      uses: docker/login-action@v3
+#      with:
+#        username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#    - name: Push to Docker Hub
+#      uses: docker/build-push-action@v6
+#      with:
+#        push: true
+#        tags: ${{ env.PUSH_TAG }}
+#
+#    - name: Remove container and local image
+#      if: always()
+#      run: |
+#        docker rm --force test
+#        docker rm --force mariadb
+#        docker rmi --force ${{ env.BUILD_TAG }}
+#        docker rmi --force ${{ env.LATEST_TAG }}
