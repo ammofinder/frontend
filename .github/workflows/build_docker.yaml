@@ -42,6 +42,7 @@ jobs:
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           LATEST_TAG="$IMAGE:latest"
+          echo "LATEST_TAG="$IMAGE:latest" >> "$GITHUB_ENV"
           echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
           echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
@@ -139,4 +140,4 @@ jobs:
         docker rm --force test
         docker rm --force mariadb
         docker rmi --force ${{ env.BUILD_TAG }}
-        docker rmi --force ${{ env.PUSH_TAG }}
+        docker rmi --force ${{ env.LATEST_TAG }}
