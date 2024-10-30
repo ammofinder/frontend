@@ -83,6 +83,9 @@ jobs:
     needs: check-files
     if: ${{ needs.check-files.outputs.skip_job == 'false' }}
 
+    env:
+      DRURUN: ${{ needs.check-files.outputs.drurun }}
+
     permissions:
       contents: read
       packages: read
@@ -99,6 +102,9 @@ jobs:
     - name: Check if dryrun
       if: ${{ needs.check-files.outputs.drurun == 'false' }}
       run: echo "Dryrun is set to false"
+
+    - name: Check if dryrun
+      run: echo "$env.DRURUN"
 
 #
 #    - name: Set BUILD_TAG
