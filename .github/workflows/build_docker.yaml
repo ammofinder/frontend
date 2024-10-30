@@ -37,15 +37,18 @@ jobs:
         SKIP_FILES="$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
         echo "Skip files list: $SKIP_FILES"
         
-        for file in "$CHANGED_FILES"; do
-          for pattern in "$SKIP_FILES"; do
+        for file in "${CHANGED_FILES[@]}"; do
+          FOUND="false"
+
+          for pattern in "${SKIP_FILES[@]}"; do
             if [[ $file == $pattern ]]; then
-              SKIP="true"
-            else
-              SKIP="false"
-              break
+              FOUND="true"
             fi
           done
+          if [[ $FOUND == "false" ]]; then
+            SKIP="false"
+            break
+          fi
         done
 
         if [[ $SKIP == "true" ]]; then
