@@ -68,8 +68,9 @@ jobs:
         echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
         echo "Get mariadb hostname IP address ->"
-        echo "DB_HOST=$(docker exec mariadb hostname -I)" >> $GITHUB_ENV
-        echo ${{ env.DB_HOST }}
+        DB_HOST=$(docker exec mariadb hostname -I | awk '{print $1}')
+        echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
+        echo "DB_HOST=$DB_HOST"
 
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
@@ -109,21 +110,24 @@ jobs:
         fi
         echo "Test PASSED"
 
-#    - name: Login to Docker Hub
-#      uses: docker/login-action@v3
-#      with:
-#        username: ${{ secrets.DOCKERHUB_USERNAME }}
-#        password: ${{ secrets.DOCKERHUB_TOKEN }}
-#
-#    - name: Push to Docker Hub
-#      uses: docker/build-push-action@v6
-#      with:
-#        push: true
-#        tags: ${{ env.BUILD_TAG }}
-#
-#    - name: Remove container and local image
-#      if: always()
-#      run: |
-#        docker rm --force test
-#        docker rm --force mariadb
-#        docker rmi --force ${{ env.BUILD_TAG }}
+    - name: Login to Docker Hub
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push to Docker Hub
+      if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      uses: docker/build-push-action@v6
+      with:
+        push: true
+        tags: ${{ env.BUILD_TAG }},${{ env.LATEST_TAG }}
+
+    - name: Remove container and local image
+      if: always()
+      run: |
+        docker rm --force test
+        docker rm --force mariadb
+        docker rmi --force ${{ env.BUILD_TAG }}
+        docker rmi --force ${{ env.LATEST_TAG }}
