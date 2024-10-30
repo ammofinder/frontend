@@ -41,13 +41,11 @@ jobs:
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            case $file in
-              $pattern)
+            if [[ $file == $pattern ]]; then
                 match_found=true
                 echo "Match found! $file matching $pattern"
                 break
-                ;;
-            esac
+            fi
           done
           if [[ $match_found == true ]]; then
             SKIP="true"
