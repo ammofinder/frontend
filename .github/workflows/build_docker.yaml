@@ -15,6 +15,11 @@ jobs:
     outputs:
       skip_job: ${{ steps.check.outputs.skip_job }}
 
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -26,9 +31,9 @@ jobs:
     - name: Check if only ignored files were changed
       id: check
       run: |
-        CHANGED_FILES=${{ steps.changed-files.outputs.all_changed_files }}
+        CHANGED_FILES="${{ steps.changed-files.outputs.all_changed_files }}"
         echo "Changed files: $CHANGED_FILES"
-        SKIP_FILES=$(cat .github/configs/skip-files.txt | tr '\n' ' ')
+        SKIP_FILES="$(cat .github/configs/skip-files.txt | tr '\n' ' ')"
         echo "Skip files list: $SKIP_FILES"
         
         for file in "$CHANGED_FILES"; do
