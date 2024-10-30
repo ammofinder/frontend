@@ -33,16 +33,16 @@ jobs:
       id: check
       run: |
         IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "${{ steps.changed-files.outputs.all_changed_files }}"
-        echo "Changed files: ${CHANGED_FILES_ARRAY[@]}"
-        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
-        echo "Skip files list: ${SKIP_FILES_ARRAY[@]}"
+        echo "Changed files: ${CHANGED_FILES_ARRAY[*]}"
+        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(tr '\n' ' ' < .github/configs/skip_ci.txt)"
+        echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
 
         SKIP="false"
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            case $file in
-              $pattern)
+            case "$file" in
+              "$pattern")
                 match_found=true
                 echo "Match found! $file matching $pattern"
                 break
