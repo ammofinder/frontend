@@ -34,6 +34,7 @@ jobs:
           DATE=$(date +"%d.%m.%Y")
           echo "BUILD_TAG=wkobiela/ammo_front:$DATE" >> $GITHUB_ENV
         fi
+        echo "LATEST_TAG"=wkobiela/ammo_front:latest >> $GITHUB_ENV
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -67,21 +68,6 @@ jobs:
         echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
 
-    - name: Create .env file with database settings
-      run: |
-        {
-            DB_HOST=$(docker exec mariadb hostname -I)
-            echo "DB_HOST=$DB_HOST"
-            echo "DB_USER=root"
-            echo "DB_PASSWORD=root"
-            echo "DB_DATABASE=example_database"
-            echo "DB_TABLE=example_table"
-            echo "DB_PORT=3306"
-            echo "NODE_ENV=production"
-        } >> .env
-        echo ".env file generated:"
-        cat .env
-
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
       with:
@@ -90,7 +76,15 @@ jobs:
         tags: ${{ env.BUILD_TAG }}
 
     - name: Run Docker container
-      run: docker run --name test --rm -d -p 3000:3000 ${{ env.BUILD_TAG }}
+      run: |
+        docker run --name test --rm -d -p 3000:3000 \
+        -e DB_HOST=$DB_HOST \
+        -e DB_USER=root \
+        -e DB_PASSWORD=root \
+        -e DB_DATABASE=example_database \
+        -e DB_TABLE=example_table \
+        -e DB_PORT=3306 \
+        ${{ env.BUILD_TAG }}
 
     - name: Wait until the container is healthy
       uses: raschmitt/wait-for-healthy-container/@master
@@ -112,21 +106,21 @@ jobs:
         fi
         echo "Test PASSED"
 
-    - name: Login to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-    - name: Push to Docker Hub
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        tags: ${{ env.BUILD_TAG }}
-
-    - name: Remove container and local image
-      if: always()
-      run: |
-        docker rm --force test
-        docker rm --force mariadb
-        docker rmi --force ${{ env.BUILD_TAG }}
+#    - name: Login to Docker Hub
+#      uses: docker/login-action@v3
+#      with:
+#        username: ${{ secrets.DOCKERHUB_USERNAME }}
+#        password: ${{ secrets.DOCKERHUB_TOKEN }}
+#
+#    - name: Push to Docker Hub
+#      uses: docker/build-push-action@v6
+#      with:
+#        push: true
+#        tags: ${{ env.BUILD_TAG }}
+#
+#    - name: Remove container and local image
+#      if: always()
+#      run: |
+#        docker rm --force test
+#        docker rm --force mariadb
+#        docker rmi --force ${{ env.BUILD_TAG }}
