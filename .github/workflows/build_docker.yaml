@@ -57,7 +57,7 @@ jobs:
           echo "skip_job=false" >> "$GITHUB_OUTPUT"
         fi
 
-        echo $GITHUB_OUTPUT"
+        echo "$GITHUB_OUTPUT"
 
   build:
     name: Build image
