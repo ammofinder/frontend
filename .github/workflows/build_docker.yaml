@@ -37,12 +37,15 @@ jobs:
         SKIP_FILES="$(cat .github/configs/skip_ci.txt | tr '\n' ' ')"
         echo "Skip files list: $SKIP_FILES"
         
+        IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "$CHANGED_FILES"
+        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$SKIP_FILES"
+
         SKIP="false"
 
-        for file in "${CHANGED_FILES[@]}"; do
+        for file in "${CHANGED_FILES_ARRAY[@]}"; do
           echo "$file"
           match_found=false
-          for pattern in "${SKIP_FILES[@]}"; do
+          for pattern in "${SKIP_FILES_ARRAY[@]}"; do
             echo "Testing $file against $pattern"
             case $file in
               $pattern)
