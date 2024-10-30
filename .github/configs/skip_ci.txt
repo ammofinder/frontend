@@ -1,4 +1,7 @@
+**/.sqlfluff
+**/.skip_ci.txt
+**/linter.yaml
+**/dependabot.yml
+.dockerignore
+.gitignore
 **/*.md
-linter.yaml
-.github/configs/**
-**/skip_ci.txt

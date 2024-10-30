@@ -53,6 +53,11 @@ jobs:
           else
             SKIP="false"
             echo "File $file should be tested."
+            if [[ $file == ".github/workflows/build_docker.yaml" ]]; then
+              echo "dryrun=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "dryrun=false" >> "$GITHUB_OUTPUT"
+            fi
             break
           fi
         done
@@ -65,20 +70,25 @@ jobs:
           echo "Job won't be skipped."
         fi
 
-#  build:
-#    name: Build image
-#    runs-on: self-hosted
-#    needs: check-files
-#    if: ${{ needs.check-files.outputs.skip_job == 'false' }}
-#
-#    permissions:
-#      contents: read
-#      packages: read
-#      statuses: write
-#
-#    steps:
-#    - name: Checkout
-#      uses: actions/checkout@v4
+  build:
+    name: Build image
+    runs-on: self-hosted
+    needs: check-files
+    if: ${{ needs.check-files.outputs.skip_job == 'false' }}
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Check if dryrun
+      run: echo "Result of dryrun output var ${DRURUN}"
+      env:
+        DRURUN: ${{ needs.check-files.outputs.drurun }}
 #
 #    - name: Set BUILD_TAG
 #      run: |
