@@ -41,8 +41,8 @@ jobs:
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            case "$file" in
-              "$pattern")
+            case $file in
+              $pattern)
                 match_found=true
                 echo "Match found! $file matching $pattern"
                 break
