@@ -1,0 +1,111 @@
+---
+name: Docker
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions: read-all
+
+env:
+  BUILD_TAG: wkobiela/ammo_front:PR-${{ github.event.number }}
+
+jobs:
+  build:
+    name: Build image
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Setup mariadb container
+      run: |
+        docker run --name mariadb --rm -d -p 3306:3306 \
+        -e MYSQL_ROOT_PASSWORD=root \
+        --health-cmd="healthcheck.sh --connect --innodb_initialized" \
+        --health-interval=10s \
+        --health-timeout=5s --health-retries=3 \
+        mariadb:latest
+
+    - name: Wait until mariadb container is healthy
+      uses: raschmitt/wait-for-healthy-container/@master
+      with:
+        container-name: mariadb
+        timeout: 120
+
+    - name: Initialize MariaDB with SQL script
+      run: |
+        echo "Initialize database -> pushing initialize_db.sql to MariaDB instance."
+        docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
+        echo "Show databases ->"
+        docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
+        echo "Describe example_table ->"
+        docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
+        echo "Show content of example_table ->"
+        docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
+
+    - name: Create .env file with database settings
+      run: |
+        {
+            DB_HOST=$(docker exec mariadb hostname -I)
+            echo "DB_HOST=$DB_HOST"
+            echo "DB_USER=root"
+            echo "DB_PASSWORD=root"
+            echo "DB_DATABASE=example_database"
+            echo "DB_TABLE=example_table"
+            echo "DB_PORT=3306"
+            echo "NODE_ENV=production"
+        } >> .env
+        echo ".env file generated:"
+        cat .env
+
+    - name: Build and export to Docker
+      uses: docker/build-push-action@v6
+      with:
+        context: ${{ github.workspace }}
+        load: true
+        tags: ${{ env.BUILD_TAG }}
+
+    - name: Run Docker container
+      run: docker run --name test --rm -d -p 3000:3000 ${{ env.BUILD_TAG }}
+
+    - name: Wait until the container is healthy
+      uses: raschmitt/wait-for-healthy-container/@master
+      with:
+        container-name: test
+        timeout: 120
+
+    - name: Verify if working
+      run: |
+        response=$(curl -s http://localhost:3000/status || exit 1)
+        echo "Server response: $response"
+
+        main_page_status=$(echo "$response" | jq -r '.["Main page status"]')
+        db_status=$(echo "$response" | jq -r '.["Database connection"]')
+
+        if [[ "$main_page_status" != "ACTIVE" || "$db_status" != "ACTIVE" ]]; then
+          echo "Error: One or both services are not ACTIVE"
+          exit 1
+        fi
+        echo "Test PASSED"
+
+    - name: Remove container and local image
+      if: always()
+      run: |
+        docker rm --force test
+        docker rm --force mariadb
+        docker rmi --force ${{ env.BUILD_TAG }}
