@@ -34,7 +34,7 @@ jobs:
           DATE=$(date +"%d.%m.%Y")
           echo "BUILD_TAG=wkobiela/ammo_front:$DATE" >> $GITHUB_ENV
         fi
-        echo "LATEST_TAG"=wkobiela/ammo_front:latest >> $GITHUB_ENV
+        echo "LATEST_TAG=wkobiela/ammo_front:latest" >> $GITHUB_ENV
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -67,6 +67,8 @@ jobs:
         docker exec mariadb mariadb --table -e "USE example_database; DESCRIBE example_table;" -uroot -proot | column -t -s $'\t'
         echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
+        echo "Get mariadb hostname IP address ->"
+        DB_HOST=$(docker exec mariadb hostname -I)
 
     - name: Build and export to Docker
       uses: docker/build-push-action@v6
