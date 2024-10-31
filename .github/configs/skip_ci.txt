@@ -4,4 +4,4 @@
 **/dependabot.yml
 .dockerignore
 .gitignore
-**/*.md
+README.md
