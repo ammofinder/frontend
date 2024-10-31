@@ -19,4 +19,4 @@ USER appuser
 CMD ["npm", "run", "start"]
 
 HEALTHCHECK --timeout=3s \
-    CMD curl -f http://localhost:3000 || exit 1
+    CMD curl -f http://localhost:3000/status || exit 1

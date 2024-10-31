@@ -1,51 +1,54 @@
 # amunicja_pomorskie_frontend
 
-Tldr: there is dobroni.org but it is aimed at stores from the south of the country, so I quickly made my own
-to scrapbook the Pomeranian stores that interest me.
+TLDR: there is dobroni.org but it is aimed at stores from the south of the country.<br>
+So? I quickly made my own to scrape information from the Pomeranian stores that are in my interest.
 
-This is my first ever project in Bootstrap/js, feel free to join.
+<u>This is my first ever project in Bootstrap/js, feel free to join.</u>
 
-## Needed packages
-- npm
-- node
+## How to run - Docker image ready for deployment
 
-## How to run
+Docker images are built within this repository CI job, and published to [Docker Hub](https://hub.docker.com/repository/docker/wkobiela/ammo_front/general) with tags:
 
-Create `.env` file in main folder, next to `index.html` with database settings:
+For master:
+- master-short_sha
+- latest
+
+For PRs:
+- PR-pr_number
+
+To run application, start Docker container with following environment variables passed:
 
 ```bash
-DB_HOST=IP_address
-DB_USER=user
-DB_PASSWORD=password
-DB_DATABASE=database_name
-DB_TABLE=table_name
-DB_PORT=port
-
-NODE_ENV=production
+docker run --name ammo_front --rm -d -p 3000:3000 \
+    -e DB_HOST=database IP address \
+    -e DB_USER=database username \
+    -e DB_PASSWORD=database password \
+    -e DB_DATABASE=database name \
+    -e DB_TABLE=table name \
+    -e DB_PORT=database port \
+wkobiela/ammo_front:latest
 ```
-
-Install dependencies and run:
+Check if container is healthy, and for the logs:
 ```bash
-npm install --only=production
-npm run start
+docker ps -a
+docker container logs ammo_front
 ```
 
-Web page and API server will be available on  `http://localhost:3000`.
+App will be available at `http://localhost:3000` (or at whatever IP address container will be started).
 
-## Run with Docker
-
-1. Build image
-```bash
-docker build -t ammo_frontend:latest .
-```
-2. Run container
-```bash
-docker run -d -p 3000:3000 ammo_frontend:latest
-```
-3. App should be accessible on host IP:3000
 
 ## Google analytics
-Create `analytics.js` file in main catalog, before building docker image/running server, with following content.<br>
+Mount `analytics.js` file in /app catalog in container.<br>
+
+```bash
+docker run --name ammo_front --rm -d -p 3000:3000 \
+    -e DB_HOST=database IP address \
+...
+    -v analytics.js:/app/analytics.js
+wkobiela/ammo_front:latest
+```
+
+File should have following content: <br>
 Remember to update `G-GOOGLE-JTAG-NUMBER` with your own analytics Google code.
 
 ```js
@@ -63,13 +66,36 @@ Remember to update `G-GOOGLE-JTAG-NUMBER` with your own analytics Google code.
 })();
 ```
 
-## Development
-Install dev packages:
+## Development - how to setup environment?
+Clone repository:
+```bash
+git clone ...
+cd repository
+```
+
+Install packages:
 ```bash
 npm install
 ```
 
-Repository is using super-linter GHA job. For local linting:
+Create `.env` file in main folder, next to `index.html` with database settings:
+
+```bash
+DB_HOST=IP_address
+DB_USER=user
+DB_PASSWORD=password
+DB_DATABASE=database_name
+DB_TABLE=table_name
+DB_PORT=port
+```
+Start web server with:
+
+```bash
+npm run start
+```
+
+
+### Repository is using super-linter GHA job - how to lint locally?
 - CSS
 ```bash
 npm stylelint init
