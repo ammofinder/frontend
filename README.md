@@ -3,7 +3,7 @@
 TLDR: there is dobroni.org but it is aimed at stores from the south of the country.<br>
 So? I quickly made my own to scrape information from the Pomeranian stores that are in my interest.
 
-#### <u>This is my first ever project in Bootstrap/js, feel free to join.</u>
+<u>This is my first ever project in Bootstrap/js, feel free to join.</u>
 
 ## How to run - Docker image ready for deployment
 
