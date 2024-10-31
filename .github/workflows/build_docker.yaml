@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       skip_job: ${{ steps.check.outputs.skip_job }}
+      dryrun: ${{ steps.check.outputs.dryrun }}
 
     permissions:
       contents: read
@@ -102,9 +103,6 @@ jobs:
     - name: Check if dryrun
       if: ${{ needs.check-files.outputs.drurun == 'false' }}
       run: echo "Dryrun is set to false"
-
-    - name: Check if dryrun
-      run: echo "$env.DRURUN"
 
 #
 #    - name: Set BUILD_TAG
