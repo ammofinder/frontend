@@ -1,13 +1,13 @@
 # amunicja_pomorskie_frontend
 
-Tldr: there is dobroni.org but it is aimed at stores from the south of the country, so I quickly made my own
-to scrapbook the Pomeranian stores that interest me.
+TLDR: there is dobroni.org but it is aimed at stores from the south of the country.<br>
+So? I quickly made my own to scrape information from the Pomeranian stores that are in my interest.
 
-This is my first ever project in Bootstrap/js, feel free to join.
+<u>This is my first ever project in Bootstrap/js, feel free to join.</u>
 
 ## How to run - Docker image ready for deployment
 
-Docker images are built within this repository CI job, and published to Docker Hub with tags:
+Docker images are built within this repository CI job, and published to [Docker Hub](https://hub.docker.com/repository/docker/wkobiela/ammo_front/general) with tags:
 
 For master:
 - master-short_sha
@@ -34,7 +34,7 @@ docker ps -a
 docker container logs ammo_front
 ```
 
-App will be available at `http://localhost:3000`
+App will be available at `http://localhost:3000` (or at whatever IP address container will be started).
 
 
 ## Google analytics
