@@ -7,7 +7,7 @@ const morgan = require('morgan')
 const http = require('http')
 const fs = require('fs')
 const app = express()
-const app_port = 3000
+const appPort = 3000
 
 // Load .env variables if .env file exists, otherwise try to use system env variables
 if (fs.existsSync('.env')) {
@@ -84,7 +84,7 @@ app.get('/status', (req, res) => {
   // Check if the main page ("/") is available
   const options = {
     host: 'localhost',
-    app_port: port,
+    port: appPort,
     path: '/',
     timeout: 2000
   }
@@ -143,6 +143,6 @@ app.get('/getData', (req, res) => {
 })
 
 // Start server
-app.listen(app_port, () => {
-  console.log(`Server is running on port http://localhost:${app_port}`)
+app.listen(appPort, () => {
+  console.log(`Server is running on port http://localhost:${appPort}`)
 })
