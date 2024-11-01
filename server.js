@@ -7,7 +7,7 @@ const morgan = require('morgan')
 const http = require('http')
 const fs = require('fs')
 const app = express()
-const port = 3000
+const app_port = 3000
 
 // Load .env variables if .env file exists, otherwise try to use system env variables
 if (fs.existsSync('.env')) {
@@ -84,7 +84,7 @@ app.get('/status', (req, res) => {
   // Check if the main page ("/") is available
   const options = {
     host: 'localhost',
-    port: port,
+    app_port: port,
     path: '/',
     timeout: 2000
   }
@@ -128,7 +128,7 @@ app.get('/getData', (req, res) => {
     sql += ' AND date_updated >= NOW() - INTERVAL 1 DAY'
   }
   if (availabilityFilter) {
-    sql += ` AND available = 'tak'`
+    sql += ' AND available = \'tak\''
   }
 
   // Use the pool to execute the query
@@ -143,6 +143,6 @@ app.get('/getData', (req, res) => {
 })
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server is running on port http://localhost:${port}`)
+app.listen(app_port, () => {
+  console.log(`Server is running on port http://localhost:${app_port}`)
 })

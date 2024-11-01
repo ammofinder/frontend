@@ -49,7 +49,7 @@ $(document).ready(function () {
     $.ajax({
       url: '/getData',
       type: 'GET',
-      data: { caliber: typ, dateFilter: filterDate , availabilityFilter: filterAvailability },
+      data: { caliber: typ, dateFilter: filterDate, availabilityFilter: filterAvailability },
       success: function (response) {
         $('#produkty-table').DataTable().clear().rows.add(response).draw()
       },
