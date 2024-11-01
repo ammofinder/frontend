@@ -120,11 +120,15 @@ app.get('/status', (req, res) => {
 app.get('/getData', (req, res) => {
   const caliber = req.query.caliber || ''
   const dateFilter = req.query.dateFilter === 'true'
+  const availabilityFilter = req.query.availabilityFilter === 'true'
 
   const tableName = process.env.DB_TABLE
   let sql = `SELECT caliber, shop, link, product_name, price, available, date_updated FROM ${tableName} WHERE caliber = ?`
   if (dateFilter) {
     sql += ' AND date_updated >= NOW() - INTERVAL 1 DAY'
+  }
+  if (availabilityFilter) {
+    sql += ` AND available = 'tak'`
   }
 
   // Use the pool to execute the query

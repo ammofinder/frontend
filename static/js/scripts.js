@@ -8,6 +8,7 @@ $(document).ready(function () {
   const html = $('html')
   const caliber = $('#caliber')
   const dateFilter = $('#date-filter')
+  const availabilityFilter = $('#availability-filter')
 
   // Initial setup for dark mode on first visit
   if (localStorage.getItem('darkMode') === 'enabled') {
@@ -44,11 +45,11 @@ $(document).ready(function () {
   })
 
   // Function for fetching data and filling table
-  function fetchData (typ, filterDate) {
+  function fetchData (typ, filterDate, filterAvailability) {
     $.ajax({
       url: '/getData',
       type: 'GET',
-      data: { caliber: typ, dateFilter: filterDate },
+      data: { caliber: typ, dateFilter: filterDate , availabilityFilter: filterAvailability },
       success: function (response) {
         $('#produkty-table').DataTable().clear().rows.add(response).draw()
       },
@@ -122,12 +123,22 @@ $(document).ready(function () {
       dateFilter.prop('checked', true)
     }
     const filterDate = dateFilter.is(':checked')
-    fetchData(caliber.val(), filterDate)
+    const filterAvailability = availabilityFilter.is(':checked')
+    fetchData(caliber.val(), filterDate, filterAvailability)
   })
 
+  // Detecting date filter switching
   dateFilter.change(function () {
     const filterDate = $(this).is(':checked')
-    fetchData(caliber.val(), filterDate)
+    const filterAvailability = availabilityFilter.is(':checked')
+    fetchData(caliber.val(), filterDate, filterAvailability)
+  })
+
+  // Detecting availability filter switching
+  availabilityFilter.change(function () {
+    const filterDate = dateFilter.is(':checked')
+    const filterAvailability = $(this).is(':checked')
+    fetchData(caliber.val(), filterDate, filterAvailability)
   })
 
   // Initial fetchData on 9x19
