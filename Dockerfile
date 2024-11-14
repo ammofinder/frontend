@@ -2,7 +2,7 @@ FROM node:23.1.0-slim
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    curl=7.88.1-10+deb12u7 && \
+    curl=7.88.1-10+deb12u8 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
