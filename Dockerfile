@@ -10,7 +10,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install --only=production && \
+RUN npm install --only=dev && \
     useradd -m appuser && \
     chown -R appuser:appuser /app
 
