@@ -39,27 +39,26 @@ jobs:
         echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
 
         SKIP="false"
+        DRYRUN_SET="false"
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            # shellcheck disable=SC2053
             if [[ $file == $pattern ]]; then
-                match_found=true
-                echo "Match found! $file matching $pattern"
-                break
+              match_found=true
+              echo "Match found! $file matching $pattern"
+              break
             fi
           done
-          if [[ $match_found == true ]]; then
-            SKIP="true"
-          else
+          if [[ $match_found == false ]]; then
             SKIP="false"
             echo "File $file should be tested."
-            if [[ $file == ".github/workflows/build_docker.yaml" ]]; then
+            if [[ $file == ".github/workflows/build_docker.yaml" && $DRYRUN_SET == "false" ]]; then
               echo "dryrun=true" >> "$GITHUB_OUTPUT"
+              DRYRUN_SET="true"
             else
               echo "dryrun=false" >> "$GITHUB_OUTPUT"
+              DRYRUN_SET="true"
             fi
-            break
           fi
         done
 
