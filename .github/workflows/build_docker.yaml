@@ -193,7 +193,7 @@ jobs:
       run: |
         HOST_IP=$(hostname -I | awk '{print $1}') && \
         docker pull wkobiela/docker_capture_web:latest && \
-        docker run --rm -v `pwd`:/tmp/screenshot \
+        docker run --rm -v "$(pwd)":/tmp/screenshot \
         wkobiela/docker_capture_web:latest \
         "http://$HOST_IP:3000" ammo_front_preview.png \
         -w 2560x1440 \
