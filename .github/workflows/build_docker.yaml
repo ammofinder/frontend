@@ -204,28 +204,6 @@ jobs:
         uploadMethod: imgbb
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
 
-    - name: 'Comment PR'
-      uses: actions/github-script@v7.0.1
-      if: github.event_name == 'pull_request'
-      with:
-        github-token: ${{ secrets.COMMENT_GITHUB_TOKEN }}
-        script: |
-          const fullrun = '${{ needs.check-files.outputs.dryrun }}' === 'false';
-          const buildTag = process.env.BUILD_TAG;
-
-          let body = '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})';
-
-          if (fullrun) {
-            body += `\n**To test your image, pull following**: ${buildTag}`;
-          }
-
-          github.rest.issues.createComment({ 
-            issue_number: context.issue.number,
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            body: body
-          })
-
     - name: Save artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -250,6 +228,28 @@ jobs:
           docker tag ${{ env.BUILD_TAG }} ${{ env.LATEST_TAG }} && \
           docker push ${{ env.LATEST_TAG }}
         fi
+
+    - name: 'Comment PR'
+      uses: actions/github-script@v7.0.1
+      if: github.event_name == 'pull_request'
+      with:
+        github-token: ${{ secrets.COMMENT_GITHUB_TOKEN }}
+        script: |
+          const fullrun = '${{ needs.check-files.outputs.dryrun }}' === 'false';
+          const buildTag = process.env.BUILD_TAG;
+
+          let body = '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})';
+
+          if (fullrun) {
+            body += `\n**To test your image, pull following**: ${buildTag}`;
+          }
+
+          github.rest.issues.createComment({ 
+            issue_number: context.issue.number,
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            body: body
+          })
 
     - name: Remove container and local image
       if: always()
