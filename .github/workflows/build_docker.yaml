@@ -197,7 +197,7 @@ jobs:
         wkobiela/docker_capture_web:latest \
         "http://$HOST_IP:3000" ammo_front_preview.png \
         -w 2560x1440 \
-        --ua 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36'
+        --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/131.0.0.0 Safari/537.36"
 
     - name: Upload image
       id: upload-image-0
