@@ -43,6 +43,7 @@ jobs:
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
+            # shellcheck disable=SC2053
             if [[ $file == $pattern ]]; then
               match_found=true
               echo "Match found! $file matching $pattern"
@@ -213,11 +214,20 @@ jobs:
       with:
         github-token: ${{ secrets.COMMENT_GITHUB_TOKEN }}
         script: |
+          const fullrun = '${{ needs.check-files.outputs.dryrun }}' === 'false';
+          const pushTag = process.env.PUSH_TAG;
+
+          let body = '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})';
+
+          if (fullrun) {
+            body += `\n**To test your image, pull following**: ${pushTag}`;
+          }
+
           github.rest.issues.createComment({ 
             issue_number: context.issue.number,
             owner: context.repo.owner, 
             repo: context.repo.repo, 
-            body: '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})'
+            body: body
           })
 
     - name: Save artifacts
