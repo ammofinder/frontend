@@ -190,10 +190,11 @@ jobs:
 
     - name: Save app preview
       run: |
+        HOST_IP=$(hostname -I | awk '{print $1}') && \
         docker pull wkobiela/docker_capture_web:latest && \
         docker run --rm -v `pwd`:/tmp/screenshot \
         wkobiela/docker_capture_web:latest \
-        "http://localhost:3000" ammo_front_preview.png
+        "http://$HOST_IP:3000" ammo_front_preview.png
 
     - name: Save artifacts
       uses: actions/upload-artifact@v4
