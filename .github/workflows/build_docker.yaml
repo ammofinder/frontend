@@ -121,6 +121,7 @@ jobs:
 
     - name: Setup mariadb container
       run: |
+        docker pull mariadb:latest && \
         docker run --name mariadb --rm -d -p 3306:3306 \
         -e MYSQL_ROOT_PASSWORD=root \
         --health-cmd="healthcheck.sh --connect --innodb_initialized" \
@@ -189,9 +190,8 @@ jobs:
 
     - name: Save app preview
       run: |
-        docker run --rm \
-        -v `pwd`:/tmp/screenshot \
-        -v /dev/shm:/dev/shm \
+        docker pull wkobiela/docker_capture_web:latest && \
+        docker run --rm -v `pwd`:/tmp/screenshot \
         wkobiela/docker_capture_web:latest \
         "http://localhost:3000" ammo_front_preview.png
 
