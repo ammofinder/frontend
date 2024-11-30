@@ -101,17 +101,13 @@ jobs:
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
           BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG"
 
         elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
           SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
         fi
 
     - name: Set up QEMU
@@ -215,12 +211,12 @@ jobs:
         github-token: ${{ secrets.COMMENT_GITHUB_TOKEN }}
         script: |
           const fullrun = '${{ needs.check-files.outputs.dryrun }}' === 'false';
-          const pushTag = process.env.PUSH_TAG;
+          const buildTag = process.env.BUILD_TAG;
 
           let body = '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})';
 
           if (fullrun) {
-            body += `\n**To test your image, pull following**: ${pushTag}`;
+            body += `\n**To test your image, pull following**: ${buildTag}`;
           }
 
           github.rest.issues.createComment({ 
@@ -246,10 +242,14 @@ jobs:
 
     - name: Push to Docker Hub
       if: ${{ needs.check-files.outputs.dryrun == 'false' }}
-      uses: docker/build-push-action@v6
-      with:
-        push: true
-        tags: ${{ env.PUSH_TAG }}
+      run: |
+        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          docker push ${{ env.BUILD_TAG }}
+        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+          docker push ${{ env.BUILD_TAG }} && \
+          docker tag ${{ env.BUILD_TAG }} ${{ env.LATEST_TAG }} && \
+          docker push ${{ env.LATEST_TAG }}
+        fi
 
     - name: Remove container and local image
       if: always()
