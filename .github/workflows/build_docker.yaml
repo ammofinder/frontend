@@ -218,7 +218,7 @@ jobs:
             issue_number: context.issue.number,
             owner: context.repo.owner, 
             repo: context.repo.repo, 
-            body: '**CI AUTOMATION**\nApp preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})'
+            body: '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})'
           })
 
     - name: Save artifacts

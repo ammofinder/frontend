@@ -81,7 +81,7 @@ $(document).ready(function () {
     },
     columns: [
       { data: 'caliber', width: '2%' },
-      { data: 'shop', width: '8%' },
+      { data: 'shop', width: '12%' },
       {
         data: 'link',
         width: '2%',
@@ -90,7 +90,7 @@ $(document).ready(function () {
         }
       },
       { data: 'product_name', width: '50%' },
-      { data: 'price', width: '9%' },
+      { data: 'price', width: '8%' },
       {
         data: 'available',
         width: '5%',
