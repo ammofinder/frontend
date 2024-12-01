@@ -1,6 +1,5 @@
 const express = require('express')
 const mysql = require('mysql')
-const cors = require('cors')
 const path = require('path')
 const winston = require('winston')
 const morgan = require('morgan')
@@ -15,13 +14,6 @@ if (fs.existsSync('.env')) {
 } else {
   console.log('.env file not found, using environment variables.')
 }
-
-// Use middleware CORS, to automatically set Access-Control-Allow-Origin header
-const corsOptions = {
-  origin: 'https://ammo.kobiela.click',
-  optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions))
 
 // Winston/morgan logger settings
 const logger = winston.createLogger({

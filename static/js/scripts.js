@@ -106,14 +106,14 @@ $(document).ready(function () {
       },
       {
         data: 'date_updated',
-        width: '8%',
+        width: '10%',
         render: function (data) {
           return moment(data).format('YYYY-MM-DD HH:mm:ss')
         }
       }
     ],
     columnDefs: [
-      { targets: [0, 1, 2, 4, 5], className: 'text-center' }
+      { targets: [0, 1, 2, 4, 5, 6], className: 'text-center' }
     ]
   })
 
