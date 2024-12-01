@@ -39,27 +39,27 @@ jobs:
         echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
 
         SKIP="false"
+        DRYRUN_SET="false"
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
             # shellcheck disable=SC2053
             if [[ $file == $pattern ]]; then
-                match_found=true
-                echo "Match found! $file matching $pattern"
-                break
+              match_found=true
+              echo "Match found! $file matching $pattern"
+              break
             fi
           done
-          if [[ $match_found == true ]]; then
-            SKIP="true"
-          else
+          if [[ $match_found == false ]]; then
             SKIP="false"
             echo "File $file should be tested."
-            if [[ $file == ".github/workflows/build_docker.yaml" ]]; then
+            if [[ $file == ".github/workflows/build_docker.yaml" && $DRYRUN_SET == "false" ]]; then
               echo "dryrun=true" >> "$GITHUB_OUTPUT"
+              DRYRUN_SET="true"
             else
               echo "dryrun=false" >> "$GITHUB_OUTPUT"
+              DRYRUN_SET="true"
             fi
-            break
           fi
         done
 
@@ -84,6 +84,7 @@ jobs:
 
     permissions:
       contents: read
+      issues: write
       packages: read
       statuses: write
 
@@ -100,17 +101,13 @@ jobs:
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
           BUILD_TAG="${IMAGE}:PR-${{ github.event.number }}"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG"
 
         elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
           SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
-          echo "PUSH_TAG=$BUILD_TAG,$LATEST_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
-          echo "PUSH_TAG is $BUILD_TAG,$LATEST_TAG"
         fi
 
     - name: Set up QEMU
@@ -121,6 +118,7 @@ jobs:
 
     - name: Setup mariadb container
       run: |
+        docker pull mariadb:latest && \
         docker run --name mariadb --rm -d -p 3306:3306 \
         -e MYSQL_ROOT_PASSWORD=root \
         --health-cmd="healthcheck.sh --connect --innodb_initialized" \
@@ -187,6 +185,32 @@ jobs:
         fi
         echo "Test PASSED"
 
+    - name: Save app preview
+      run: |
+        HOST_IP=$(hostname -I | awk '{print $1}') && \
+        docker pull wkobiela/docker_capture_web:latest && \
+        docker run --rm -v "$(pwd)":/tmp/screenshot \
+        wkobiela/docker_capture_web:latest \
+        "http://$HOST_IP:3000" ammo_front_preview.png \
+        -w 2560x1440 \
+        --ua "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/131.0.0.0 Safari/537.36"
+
+    - name: Upload image
+      id: upload-image-0
+      uses: McCzarny/upload-image@v1.2.5
+      if: github.event_name == 'pull_request'
+      with:
+        path: ammo_front_preview.png
+        uploadMethod: imgbb
+        apiKey: '${{ secrets.IMGBB_API_KEY }}'
+
+    - name: Save artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ammo_front_preview
+        path: |
+            **/*.png
+
     - name: Login to Docker Hub
       if: ${{ needs.check-files.outputs.dryrun == 'false' }}
       uses: docker/login-action@v3
@@ -196,10 +220,36 @@ jobs:
 
     - name: Push to Docker Hub
       if: ${{ needs.check-files.outputs.dryrun == 'false' }}
-      uses: docker/build-push-action@v6
+      run: |
+        if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          docker push ${{ env.BUILD_TAG }}
+        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+          docker push ${{ env.BUILD_TAG }} && \
+          docker tag ${{ env.BUILD_TAG }} ${{ env.LATEST_TAG }} && \
+          docker push ${{ env.LATEST_TAG }}
+        fi
+
+    - name: 'Comment PR'
+      uses: actions/github-script@v7.0.1
+      if: github.event_name == 'pull_request'
       with:
-        push: true
-        tags: ${{ env.PUSH_TAG }}
+        github-token: ${{ secrets.COMMENT_GITHUB_TOKEN }}
+        script: |
+          const fullrun = '${{ needs.check-files.outputs.dryrun }}' === 'false';
+          const buildTag = process.env.BUILD_TAG;
+
+          let body = '**CI AUTOMATION** -> App preview screenshot:\n![0](${{steps.upload-image-0.outputs.url}})';
+
+          if (fullrun) {
+            body += `\n**To test your image, pull following**: ${buildTag}`;
+          }
+
+          github.rest.issues.createComment({ 
+            issue_number: context.issue.number,
+            owner: context.repo.owner, 
+            repo: context.repo.repo, 
+            body: body
+          })
 
     - name: Remove container and local image
       if: always()
