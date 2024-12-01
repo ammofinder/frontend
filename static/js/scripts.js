@@ -113,7 +113,7 @@ $(document).ready(function () {
       }
     ],
     columnDefs: [
-      { targets: [0, 1, 2, 4, 5], className: 'text-center' }
+      { targets: [0, 1, 2, 4, 5, 6], className: 'text-center' }
     ]
   })
 
