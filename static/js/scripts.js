@@ -106,7 +106,7 @@ $(document).ready(function () {
       },
       {
         data: 'date_updated',
-        width: '8%',
+        width: '10%',
         render: function (data) {
           return moment(data).format('YYYY-MM-DD HH:mm:ss')
         }
