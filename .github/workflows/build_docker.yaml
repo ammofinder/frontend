@@ -108,7 +108,7 @@ jobs:
 
     - name: Set BUILD_TAG
       run: |
-        IMAGE="wkobiela/ammo_front"
+        IMAGE="wkobiela/ammofinder_frontend"
         LATEST_TAG="$IMAGE:latest"
         echo "LATEST_TAG=$LATEST_TAG" >> "$GITHUB_ENV"
 

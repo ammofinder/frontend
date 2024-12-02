@@ -64,7 +64,7 @@ app.get('/', (req, res) => {
 // Route with informations about api
 app.get('/api', (req, res) => {
   res.send(`
-        <h1>Database connection API server - amunicja_pomorskie_frontend</h1>
+        <h1>Database connection API server - AmmoFinder</h1>
         <p>Available endpoints:</p>
         <ul>
             <li><strong>GET</strong> /getData - Downloading data based on the caliber parameter - example: /getData?caliber=9x19</li>
