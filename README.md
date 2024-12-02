@@ -116,7 +116,7 @@ standard --fix
 
 ## Early preview
 
-![preview](https://i.ibb.co/30XDnKN/Przechwytywanie.png)
+![preview](https://i.ibb.co/XpZxpSH/Przechwytywanie.png)
 
 
 ## More info
