@@ -38,8 +38,12 @@ jobs:
         IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(tr '\n' ' ' < .github/configs/skip_ci.txt)"
         echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
 
-        SKIP="false"
-        DRYRUN_SET="false"
+        # Initialize variables
+        SKIP="true"
+        DRYRUN="false"
+        NON_MATCHING_FILES=()
+
+        # Check if changed files match any pattern
         for file in "${CHANGED_FILES_ARRAY[@]}"; do
           match_found=false
           for pattern in "${SKIP_FILES_ARRAY[@]}"; do
@@ -50,25 +54,35 @@ jobs:
               break
             fi
           done
+
           if [[ $match_found == false ]]; then
             SKIP="false"
-            echo "File $file should be tested."
-            if [[ $file == ".github/workflows/build_docker.yaml" && $DRYRUN_SET == "false" ]]; then
-              echo "dryrun=true" >> "$GITHUB_OUTPUT"
-              DRYRUN_SET="true"
-            else
-              echo "dryrun=false" >> "$GITHUB_OUTPUT"
-              DRYRUN_SET="true"
-            fi
+            NON_MATCHING_FILES+=("$file")
+            echo "File $file does not match any skip pattern and should be tested."
           fi
         done
 
+        # Check conditon for dryrun
+        if [[ ${#NON_MATCHING_FILES[@]} -eq 1 && ${NON_MATCHING_FILES[0]} == ".github/workflows/build_docker.yaml" ]]; then
+          DRYRUN="true"
+        else
+          DRYRUN="false"
+        fi
+
+        # Results
+        echo "Non-matching files: ${NON_MATCHING_FILES[*]}"
+        echo "skip_job=${SKIP}" >> "$GITHUB_OUTPUT"
+        echo "dryrun=${DRYRUN}" >> "$GITHUB_OUTPUT"
+
         if [[ $SKIP == "true" ]]; then
-          echo "skip_job=true" >> "$GITHUB_OUTPUT"
           echo "Job will be skipped."
         else
-          echo "skip_job=false" >> "$GITHUB_OUTPUT"
           echo "Job won't be skipped."
+          if [[ $DRYRUN == "true" ]]
+            echo "Dryrun"
+          else
+            echo "Full run"
+          fi
         fi
 
     - name: Get output values
@@ -78,7 +92,7 @@ jobs:
 
   build:
     name: Build image
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: check-files
     if: ${{ needs.check-files.outputs.skip_job == 'false' }}
 

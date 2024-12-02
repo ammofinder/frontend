@@ -1,7 +1,7 @@
 # ammofinder frontend
 
 TLDR: there already is [dobroni.org](dobroni.org) but it is aimed at stores from the south of the country.<br>
-That's a pitty, northern shooters want some easy-to-find cheap ammo too! <br> 
+That's a pitty, northern shooters want some easy-to-find cheap ammo too!<br>
 So? I quickly made my own project to scrape information from the Pomeranian stores that are in my interest - mainly Trojmiasto region.
 
 <u>This is my first ever project in Bootstrap/js, feel free to join.</u>
@@ -9,8 +9,8 @@ So? I quickly made my own project to scrape information from the Pomeranian stor
 Cheers,<br>
 [@wkobiela](https://github.com/wkobiela)
 
-# Production server running and available here
-## [https://ammofinder.duckdns.org/](https://ammofinder.duckdns.org/) <br><br>
+## Production server running and available here
+### [https://ammofinder.duckdns.org/](https://ammofinder.duckdns.org/) <br><br>
 
 
 ## How to run - Docker image ready for deployment
