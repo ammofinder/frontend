@@ -15,7 +15,7 @@ Cheers,<br>
 
 ## How to run - Docker image ready for deployment
 
-Docker images are built within this repository CI job, and published to [Docker Hub](https://hub.docker.com/repository/docker/wkobiela/ammo_front/general) with tags:
+Docker images are built within this repository CI job, and published to [Docker Hub](https://hub.docker.com/repository/docker/wkobiela/ammofinder_frontend/general) with tags:
 
 For master:
 - master-short_sha
