@@ -78,7 +78,7 @@ jobs:
           echo "Job will be skipped."
         else
           echo "Job won't be skipped."
-          if [[ $DRYRUN == "true" ]]
+          if [[ $DRYRUN == "true" ]]; then
             echo "Dryrun"
           else
             echo "Full run"
