@@ -27,19 +27,19 @@ For PRs:
 To run application, start Docker container with following environment variables passed:
 
 ```bash
-docker run --name ammo_front --rm -d -p 3000:3000 \
+docker run --name ammofinder_frontend --rm -d -p 3000:3000 \
     -e DB_HOST=database IP address \
     -e DB_USER=database username \
     -e DB_PASSWORD=database password \
     -e DB_DATABASE=database name \
     -e DB_TABLE=table name \
     -e DB_PORT=database port \
-wkobiela/ammo_front:latest
+wkobiela/ammofinder_frontend:latest
 ```
 Check if container is healthy, and for the logs:
 ```bash
 docker ps -a
-docker container logs ammo_front
+docker container logs ammofinder_frontend
 ```
 
 App will be available at `http://localhost:3000` (or at whatever IP address container will be started).
@@ -49,11 +49,11 @@ App will be available at `http://localhost:3000` (or at whatever IP address cont
 Mount `analytics.js` file in /app catalog in container.<br>
 
 ```bash
-docker run --name ammo_front --rm -d -p 3000:3000 \
+docker run --name ammofinder_frontend --rm -d -p 3000:3000 \
     -e DB_HOST=database IP address \
 ...
     -v analytics.js:/app/analytics.js
-wkobiela/ammo_front:latest
+wkobiela/ammofinder_frontend:latest
 ```
 
 File should have following content: <br>
