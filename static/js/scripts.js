@@ -1,5 +1,5 @@
 /* global moment */
-/* global localStorage */
+/* global localStorage */ // eslint-disable-line no-redeclare
 /* global DataTable */
 /* global $ */
 
