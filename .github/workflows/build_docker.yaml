@@ -28,7 +28,7 @@ jobs:
 
     - name: Check for changed files
       id: changed-files
-      uses: tj-actions/changed-files@v45
+      uses: tj-actions/changed-files@v46
 
     - name: Check if only ignored files were changed
       id: check
