@@ -211,7 +211,7 @@ jobs:
 
     - name: Upload image
       id: upload-image-0
-      uses: McCzarny/upload-image@v2.0.1
+      uses: McCzarny/upload-image@v2.0.2
       if: github.event_name == 'pull_request'
       with:
         path: ammo_front_preview.png
