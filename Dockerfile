@@ -1,4 +1,4 @@
-FROM node:25.2.0-alpine AS builder
+FROM node:25.2.1-alpine AS builder
 
 WORKDIR /app
 
@@ -6,7 +6,7 @@ COPY package*.json ./
 
 RUN npm install --only=production
 
-FROM node:25.2.0-alpine
+FROM node:25.2.1-alpine
 
 WORKDIR /app
 
