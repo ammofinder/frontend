@@ -219,7 +219,7 @@ jobs:
         apiKey: '${{ secrets.IMGBB_API_KEY }}'
 
     - name: Save artifacts
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: ammo_front_preview
         path: |
