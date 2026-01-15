@@ -250,14 +250,6 @@ jobs:
           echo ""
           echo "[Open image directly](${{ steps.upload-image-0.outputs.url }})"
           echo ""
-          echo "![Preview](${{ steps.upload-image-0.outputs.url }})"
-          
-          if [[ "${{ needs.check-files.outputs.dryrun }}" == "false" ]]; then
-            echo ""
-            echo "### 🐳 Docker image"
-            echo ""
-            echo "\`${BUILD_TAG}\`"
-          fi
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Remove container and local image
