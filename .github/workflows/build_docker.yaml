@@ -23,72 +23,79 @@ jobs:
       statuses: write
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v6
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-    - name: Check for changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v47
+      - name: Check for changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v47
 
-    - name: Check if only ignored files were changed
-      id: check
-      run: |
-        IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "${{ steps.changed-files.outputs.all_changed_files }}"
-        echo "Changed files: ${CHANGED_FILES_ARRAY[*]}"
-        IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(tr '\n' ' ' < .github/configs/skip_ci.txt)"
-        echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
+      - name: Check if only ignored files were changed
+        id: check
+        run: |
+          IFS=' ' read -r -a CHANGED_FILES_ARRAY <<< "${STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES}"
+          echo "Changed files: ${CHANGED_FILES_ARRAY[*]}"
+          IFS=' ' read -r -a SKIP_FILES_ARRAY <<< "$(tr '\n' ' ' < .github/configs/skip_ci.txt)"
+          echo "Skip files list: ${SKIP_FILES_ARRAY[*]}"
 
-        # Initialize variables
-        SKIP="true"
-        DRYRUN="false"
-        NON_MATCHING_FILES=()
+          # Initialize variables
+          SKIP="true"
+          DRYRUN="false"
+          NON_MATCHING_FILES=()
 
-        # Check if changed files match any pattern
-        for file in "${CHANGED_FILES_ARRAY[@]}"; do
-          match_found=false
-          for pattern in "${SKIP_FILES_ARRAY[@]}"; do
-            # shellcheck disable=SC2053
-            if [[ $file == $pattern ]]; then
-              match_found=true
-              echo "Match found! $file matching $pattern"
-              break
+          # Check if changed files match any pattern
+          for file in "${CHANGED_FILES_ARRAY[@]}"; do
+            match_found=false
+            for pattern in "${SKIP_FILES_ARRAY[@]}"; do
+              # shellcheck disable=SC2053
+              if [[ $file == $pattern ]]; then
+                match_found=true
+                echo "Match found! $file matching $pattern"
+                break
+              fi
+            done
+
+            if [[ $match_found == false ]]; then
+              SKIP="false"
+              NON_MATCHING_FILES+=("$file")
+              echo "File $file does not match any skip pattern and should be tested."
             fi
           done
 
-          if [[ $match_found == false ]]; then
-            SKIP="false"
-            NON_MATCHING_FILES+=("$file")
-            echo "File $file does not match any skip pattern and should be tested."
-          fi
-        done
-
-        # Check conditon for dryrun
-        if [[ ${#NON_MATCHING_FILES[@]} -eq 1 && ${NON_MATCHING_FILES[0]} == ".github/workflows/build_docker.yaml" ]]; then
-          DRYRUN="true"
-        else
-          DRYRUN="false"
-        fi
-
-        # Results
-        echo "Non-matching files: ${NON_MATCHING_FILES[*]}"
-        echo "skip_job=${SKIP}" >> "$GITHUB_OUTPUT"
-        echo "dryrun=${DRYRUN}" >> "$GITHUB_OUTPUT"
-
-        if [[ $SKIP == "true" ]]; then
-          echo "Job will be skipped."
-        else
-          echo "Job won't be skipped."
-          if [[ $DRYRUN == "true" ]]; then
-            echo "Dryrun"
+          # Check conditon for dryrun
+          if [[ ${#NON_MATCHING_FILES[@]} -eq 1 && ${NON_MATCHING_FILES[0]} == ".github/workflows/build_docker.yaml" ]]; then
+            DRYRUN="true"
           else
-            echo "Full run"
+            DRYRUN="false"
           fi
-        fi
 
-    - name: Get output values
-      run: |
-        echo "The dryrun param is ${{ steps.check.outputs.dryrun }}"
-        echo "The skip_job param is ${{ steps.check.outputs.skip_job }}"
+          # Results
+          echo "Non-matching files: ${NON_MATCHING_FILES[*]}"
+          echo "skip_job=${SKIP}" >> "$GITHUB_OUTPUT"
+          echo "dryrun=${DRYRUN}" >> "$GITHUB_OUTPUT"
+
+          if [[ $SKIP == "true" ]]; then
+            echo "Job will be skipped."
+          else
+            echo "Job won't be skipped."
+            if [[ $DRYRUN == "true" ]]; then
+              echo "Dryrun"
+            else
+              echo "Full run"
+            fi
+          fi
+        env:
+          STEPS_CHANGED_FILES_OUTPUTS_ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
+
+      - name: Get output values
+        run: |
+          echo "The dryrun param is ${STEPS_CHECK_OUTPUTS_DRYRUN}"
+          echo "The skip_job param is ${STEPS_CHECK_OUTPUTS_SKIP_JOB}"
+        env:
+          STEPS_CHECK_OUTPUTS_DRYRUN: ${{ steps.check.outputs.dryrun }}
+          STEPS_CHECK_OUTPUTS_SKIP_JOB: ${{ steps.check.outputs.skip_job }}
 
   build:
     name: Build image
@@ -105,6 +112,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v6
+      with:
+        persist-credentials: false
 
     - name: Set BUILD_TAG
       run: |
@@ -117,7 +126,7 @@ jobs:
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
           echo "BUILD_TAG is $BUILD_TAG"
 
-        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+        elif [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
           SHORT_COMMIT=$(echo "${{ github.sha }}" | cut -c1-7)
           BUILD_TAG="$IMAGE:master-$SHORT_COMMIT"
           echo "BUILD_TAG=$BUILD_TAG" >> "$GITHUB_ENV"
@@ -141,7 +150,7 @@ jobs:
         mariadb:latest
 
     - name: Wait until mariadb container is healthy
-      uses: raschmitt/wait-for-healthy-container/@master
+      uses: raschmitt/wait-for-healthy-container@master
       with:
         container-name: mariadb
         timeout: 120
@@ -171,16 +180,16 @@ jobs:
     - name: Run Docker container
       run: |
         docker run --name test --rm -d -p 3000:3000 \
-        -e DB_HOST=${{ env.DB_HOST }} \
+        -e DB_HOST=${DB_HOST} \
         -e DB_USER=root \
         -e DB_PASSWORD=root \
         -e DB_DATABASE=example_database \
         -e DB_TABLE=example_table \
         -e DB_PORT=3306 \
-        ${{ env.BUILD_TAG }}
+        ${BUILD_TAG}
 
     - name: Wait until the container is healthy
-      uses: raschmitt/wait-for-healthy-container/@master
+      uses: raschmitt/wait-for-healthy-container@master
       with:
         container-name: test
         timeout: 120
@@ -236,11 +245,11 @@ jobs:
       if: ${{ needs.check-files.outputs.dryrun == 'false' }}
       run: |
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          docker push ${{ env.BUILD_TAG }}
-        elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
-          docker push ${{ env.BUILD_TAG }} && \
-          docker tag ${{ env.BUILD_TAG }} ${{ env.LATEST_TAG }} && \
-          docker push ${{ env.LATEST_TAG }}
+          docker push ${BUILD_TAG}
+        elif [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
+          docker push ${BUILD_TAG} && \
+          docker tag ${BUILD_TAG} ${LATEST_TAG} && \
+          docker push ${LATEST_TAG}
         fi
 
     - name: Add preview to job summary
@@ -248,14 +257,16 @@ jobs:
         {
           echo "## 🖼️ App preview"
           echo ""
-          echo "[Open image directly](${{ steps.upload-image-0.outputs.url }})"
+          echo "[Open image directly](${STEPS_UPLOAD_IMAGE_0_OUTPUTS_URL})"
           echo ""
         } >> "$GITHUB_STEP_SUMMARY"
+      env:
+        STEPS_UPLOAD_IMAGE_0_OUTPUTS_URL: ${{ steps.upload-image-0.outputs.url }}
 
     - name: Remove container and local image
       if: always()
       run: |
         docker rm --force test
         docker rm --force mariadb
-        docker rmi --force ${{ env.BUILD_TAG }}
-        docker rmi --force ${{ env.LATEST_TAG }}
+        docker rmi --force ${BUILD_TAG}
+        docker rmi --force ${LATEST_TAG}

@@ -14,6 +14,8 @@ updates:
     assignees:
     - "wkobiela"
     versioning-strategy: increase-if-necessary
+    cooldown:
+      default-days: 1
 
   # Github Actions
   - package-ecosystem: github-actions
@@ -25,6 +27,8 @@ updates:
     open-pull-requests-limit: 3
     assignees:
       - "wkobiela"
+    cooldown:
+      default-days: 1
       
   # Docker dependencies
   - package-ecosystem: docker
@@ -36,6 +40,8 @@ updates:
     open-pull-requests-limit: 3
     assignees:
       - "wkobiela"
+    cooldown:
+      default-days: 1
 
   # npm dependencies
   - package-ecosystem: npm
@@ -47,4 +53,6 @@ updates:
     open-pull-requests-limit: 3
     assignees:
       - "wkobiela"
+    cooldown:
+      default-days: 1
   
