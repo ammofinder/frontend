@@ -245,11 +245,11 @@ jobs:
       if: ${{ needs.check-files.outputs.dryrun == 'false' }}
       run: |
         if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-          docker push ${BUILD_TAG}
+          docker push "${BUILD_TAG}"
         elif [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
-          docker push ${BUILD_TAG} && \
-          docker tag ${BUILD_TAG} ${LATEST_TAG} && \
-          docker push ${LATEST_TAG}
+          docker push "${BUILD_TAG}" && \
+          docker tag "${BUILD_TAG}" "${LATEST_TAG}" && \
+          docker push "${LATEST_TAG}"
         fi
 
     - name: Add preview to job summary
