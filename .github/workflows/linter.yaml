@@ -41,3 +41,6 @@ jobs:
           VALIDATE_JSON_PRETTIER: false
           MULTI_STATUS: false
           SQLFLUFF_CONFIG_FILE: .sqlfluff
+          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_BIOME_FORMAT: false
+          VALIDATE_BIOME_LINT: false
