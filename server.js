@@ -61,7 +61,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-// Route with informations about api
+// Route with information about api
 app.get('/api', (req, res) => {
   res.send(`
         <h1>Database connection API server - AmmoFinder</h1>
@@ -108,7 +108,7 @@ app.get('/status', (req, res) => {
   request.end()
 })
 
-// Handling GET request for data retrival from database
+// Handling GET request for data retrieval from database
 app.get('/getData', (req, res) => {
   const caliber = req.query.caliber || ''
   const dateFilter = req.query.dateFilter === 'true'

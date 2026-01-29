@@ -1,7 +1,7 @@
 # ammofinder frontend
 
 TLDR: there already is [dobroni.org](dobroni.org) but it is aimed at stores from the south of the country.<br>
-That's a pitty, northern shooters want some easy-to-find cheap ammo too!<br>
+That's a pity, northern shooters want some easy-to-find cheap ammo too!<br>
 So? I quickly made my own project to scrape information from the Pomeranian stores that are in my interest - mainly Trojmiasto region.
 
 <u>This is my first ever project in Bootstrap/js, feel free to join.</u>
