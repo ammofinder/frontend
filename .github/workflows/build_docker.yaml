@@ -143,10 +143,10 @@ jobs:
       run: |
         docker pull mariadb:latest && \
         docker run --name mariadb --rm -d -p 3306:3306 \
-        -e MYSQL_ROOT_PASSWORD=root \
+        -e MYSQL_ROOT_PASSWORD="root" \
         --health-cmd="healthcheck.sh --connect --innodb_initialized" \
-        --health-interval=10s \
-        --health-timeout=5s --health-retries=3 \
+        --health-interval="10s" \
+        --health-timeout="5s" --health-retries="3" \
         mariadb:latest
 
     - name: Wait until mariadb container is healthy
@@ -158,7 +158,7 @@ jobs:
     - name: Initialize MariaDB with SQL script
       run: |
         echo "Initialize database -> pushing initialize_db.sql to MariaDB instance."
-        docker exec -i mariadb mariadb -uroot -proot < .github/configs/initialize_db.sql
+        docker exec -i mariadb mariadb -uroot -proot < ".github/configs/initialize_db.sql"
         echo "Show databases ->"
         docker exec mariadb mariadb --table -e "SHOW DATABASES;" -uroot -proot | column -t -s $'\t'
         echo "Describe example_table ->"
@@ -166,7 +166,7 @@ jobs:
         echo "Show content of example_table ->"
         docker exec mariadb mariadb -e "USE example_database; SELECT * FROM example_table;" -uroot -proot | column -t -s $'\t'
         echo "Get mariadb hostname IP address ->"
-        DB_HOST=$(docker exec mariadb hostname -I | awk '{print $1}')
+        DB_HOST="$(docker exec mariadb hostname -I | awk '{print $1}')"
         echo "DB_HOST=$DB_HOST" >> "$GITHUB_ENV"
         echo "DB_HOST=$DB_HOST"
 
@@ -180,13 +180,13 @@ jobs:
     - name: Run Docker container
       run: |
         docker run --name test --rm -d -p 3000:3000 \
-        -e DB_HOST=${DB_HOST} \
-        -e DB_USER=root \
-        -e DB_PASSWORD=root \
-        -e DB_DATABASE=example_database \
-        -e DB_TABLE=example_table \
-        -e DB_PORT=3306 \
-        ${BUILD_TAG}
+        -e DB_HOST="${DB_HOST}" \
+        -e DB_USER="root" \
+        -e DB_PASSWORD="root" \
+        -e DB_DATABASE="example_database" \
+        -e DB_TABLE="example_table" \
+        -e DB_PORT="3306" \
+        "${BUILD_TAG}"
 
     - name: Wait until the container is healthy
       uses: raschmitt/wait-for-healthy-container@master
@@ -266,7 +266,7 @@ jobs:
     - name: Remove container and local image
       if: always()
       run: |
-        docker rm --force test
-        docker rm --force mariadb
-        docker rmi --force ${BUILD_TAG}
-        docker rmi --force ${LATEST_TAG}
+        docker rm --force "test"
+        docker rm --force "mariadb"
+        docker rmi --force "${BUILD_TAG}"
+        docker rmi --force "${LATEST_TAG}"
