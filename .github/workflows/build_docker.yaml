@@ -64,7 +64,7 @@ jobs:
             fi
           done
 
-          # Check conditon for dryrun
+          # Check condition for dryrun
           if [[ ${#NON_MATCHING_FILES[@]} -eq 1 && ${NON_MATCHING_FILES[0]} == ".github/workflows/build_docker.yaml" ]]; then
             DRYRUN="true"
           else
