@@ -171,7 +171,7 @@ jobs:
         echo "DB_HOST=$DB_HOST"
 
     - name: Build and export to Docker
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       with:
         context: ${{ github.workspace }}
         load: true
